@@ -74,12 +74,12 @@ export function LoginForm() {
           {loading ? "Signing in…" : "Sign In"}
         </button>
       </form>
-
+{/* 
       <p className="mt-6 text-xs text-[var(--color-muted)]">
         Default password: <code className="bg-[var(--color-surface)] px-1">changeme123</code>.
         Set <code className="bg-[var(--color-surface)] px-1">ADMIN_PASSWORD</code> in{" "}
         <code className="bg-[var(--color-surface)] px-1">.env.local</code>.
-      </p>
+      </p> */}
     </div>
   );
 }
