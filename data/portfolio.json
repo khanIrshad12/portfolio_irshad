@@ -1,0 +1,368 @@
+{
+  "profile": {
+    "name": "Irshad Khan",
+    "title": "Full Stack Developer",
+    "tagline": "Full stack developer shipping production web apps — real-time industrial dashboards, ecommerce platforms, booking systems, and enterprise CMS builds across 10+ client projects.",
+    "email": "irshadkhance@gmail.com",
+    "phone": "+91 77150 43438",
+    "location": "Mumbai, Maharashtra",
+    "resumeUrl": "/resume.pdf",
+    "avatarUrl": "",
+    "currentCompany": "Kenmark ITanSolutions",
+    "currentRole": "Full Stack Developer",
+    "totalExperience": "2 years 9 months"
+  },
+  "social": {
+    "github": "https://github.com/khanIrshad12",
+    "linkedin": "https://www.linkedin.com/in/irshad-alam-khan-517631252/",
+    "twitter": "",
+    "website": ""
+  },
+  "about": {
+    "headline": "Full stack developer at Kenmark ITanSolutions — 10+ production projects shipped",
+    "bio": "I'm a full stack developer with 2.9 years at Kenmark ITanSolutions, delivering end-to-end systems for entertainment, maritime, ecommerce, and industrial IoT clients. I've built airport airfield lighting control dashboards (React, Socket.IO, Modbus TCP), Smaaash's full platform stack (marketing site, booking engine, Express API, admin dashboards), INMARCO conference websites, maritime calendar apps, and ecommerce storefronts with Prisma, payments, and admin CMS tooling. Comfortable across frontend, backend APIs, databases, auth, and deployment — with a focus on performance, SEO, and production reliability.",
+    "highlights": [
+      "Full Stack Developer @ Kenmark ITanSolutions — 2 yrs 9 month, 10+ production projects",
+      "NASU: Real-time airport lighting HMI — React, Socket.IO, Modbus TCP, Canvas maps",
+      "Smaaash platform: Website, booking engine, Express API, multi-role admin dashboard",
+      "INMARCO, Maritime Calendar, Aerosailors & ecommerce clients — Next.js monorepos",
+      "B.E. Computer Engineering — University of Mumbai (2020–2023)"
+    ]
+  },
+  "showcase": [
+    {
+      "id": "exp",
+      "value": "2.5+",
+      "label": "Years Experience"
+    },
+    {
+      "id": "projects",
+      "value": "10+",
+      "label": "Production Projects"
+    },
+    {
+      "id": "company",
+      "value": "Kenmark",
+      "label": "Current Company"
+    },
+    {
+      "id": "stack",
+      "value": "Full",
+      "label": "Stack Developer"
+    },
+    {
+      "id": "certs",
+      "value": "2",
+      "label": "Certifications"
+    }
+  ],
+  "skills": [
+    {
+      "name": "Next.js / React",
+      "level": 95
+    },
+    {
+      "name": "TypeScript / JavaScript",
+      "level": 92
+    },
+    {
+      "name": "Node.js / Express / REST API",
+      "level": 90
+    },
+    {
+      "name": "MySQL / MongoDB / Prisma",
+      "level": 88
+    },
+    {
+      "name": "Tailwind / Shadcn / Radix UI",
+      "level": 90
+    },
+    {
+      "name": "Socket.IO / Real-time",
+      "level": 88
+    },
+    {
+      "name": "JWT / Auth / RBAC",
+      "level": 85
+    },
+    {
+      "name": "TanStack Query / Zustand",
+      "level": 85
+    },
+    {
+      "name": "Razorpay / Stripe / Payments",
+      "level": 82
+    }
+  ],
+  "projects": [
+    {
+      "id": "nasu-hmi",
+      "title": "Airport Lighting Control System Dashboard",
+      "company": "Kenmark ITanSolutions · NASU",
+      "description": "Real-time industrial HMI for airport runway and taxiway lighting — React, Socket.IO, and Modbus TCP with interactive airfield canvas, CCR control, fault monitoring, and 24/7 multi-server failover.",
+      "highlights": [
+        "Canvas airfield map with zoom/pan, drag-and-drop device management, and live status indicators",
+        "WebSocket streaming with 60fps batching, connection health checks, and domain failover",
+        "CCR intensity control, utility toggles, global blackout orchestration, and SNMP network view",
+        "JWT roles (Admin/Operator/Viewer), system log export, and Python Tornado Modbus backend"
+      ],
+      "tags": [
+        "React",
+        "Socket.IO",
+        "Modbus TCP",
+        "Python",
+        "Canvas API"
+      ],
+      "url": "",
+      "linkLabel": "",
+      "featured": true
+    },
+    {
+      "id": "smaaash-website",
+      "title": "Smaaash Corporate / Media Website",
+      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
+      "description": "Full-stack corporate website on Next.js 15, React 19, MySQL, and Prisma — 95+ components, RBAC admin CMS, OTP party forms, LeadSquared CRM, and enterprise SEO.",
+      "highlights": [
+        "95+ components with Radix/shadcn, Tailwind v4, Zustand, TanStack Query",
+        "RBAC admin: SUPERADMIN, HR, CONTENT_MANAGER roles with JWT HTTP-only cookies",
+        "OTP-verified party enquiry flows, location-routed emails, GTM/Meta Pixel tracking",
+        "Dynamic sitemap, JSON-LD structured data, video optimization up to 90% size reduction"
+      ],
+      "tags": [
+        "Next.js",
+        "Prisma",
+        "MySQL",
+        "NextAuth",
+        "SEO"
+      ],
+      "url": "https://www.gosmaaash.com",
+      "linkLabel": "Live Website",
+      "featured": true
+    },
+    {
+      "id": "smaaash-booking",
+      "title": "Smaaash Bookings Engine",
+      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
+      "description": "Customer booking platform for gaming venues — Bowling, Cricket, Go-Karting slot selection, cart, Razorpay checkout, offers, and PWA support in a Next.js 16 monorepo.",
+      "highlights": [
+        "Dynamic routing per game category with real-time slot availability from API",
+        "Cart, checkout, offers page with complex validation and JWT-secured sessions",
+        "Razorpay payment integration, GA4, Facebook Pixel, and catalog caching optimizations",
+        "Shared TypeScript packages across frontend and Express API via Turborepo"
+      ],
+      "tags": [
+        "Next.js",
+        "Express",
+        "Razorpay",
+        "MySQL",
+        "Turborepo"
+      ],
+      "url": "https://bookings.gosmaaash.com",
+      "linkLabel": "Live Booking Engine",
+      "featured": true
+    },
+    {
+      "id": "smaaash-admin",
+      "title": "Smaaash Admin & Operations Dashboard",
+      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
+      "description": "Multi-role React/Vite admin SPA for venue operations — Game Host, Center Head, and Admin portals with booking management, offers, vouchers, analytics, and CSRF-safe API integration.",
+      "highlights": [
+        "Three role-based portals: Game Host, Center Head, Admin with separate auth flows",
+        "Bowling/cricket booking schedules, cancellations, order summaries, offer CRUD",
+        "PrimeReact DataTables with server-side pagination on high-volume booking lists",
+        "CSRF token handling, Vite proxy dev setup, and cross-origin cookie support"
+      ],
+      "tags": [
+        "React",
+        "Vite",
+        "TypeScript",
+        "PrimeReact",
+        "Express API"
+      ],
+      "url": "",
+      "linkLabel": "",
+      "featured": true
+    },
+    {
+      "id": "inmarco",
+      "title": "INMARCO Conference Websites",
+      "company": "Kenmark ITanSolutions · INMARCO",
+      "description": "Turborepo monorepo delivering INMARCO maritime conference websites (2018, 2022, 2026 editions) — multi-page Next.js 16 apps with papers, galleries, committees, and brochure content.",
+      "highlights": [
+        "Three conference site generations in a pnpm/Turborepo workspace with shared utilities",
+        "Next.js 16, React 19, TypeScript, and Tailwind CSS across all editions",
+        "Content pages: papers, speakers, organizing committee, image galleries, venue info",
+        "Shared packages for logging, error handling, and UI consistency"
+      ],
+      "tags": [
+        "Next.js",
+        "Turborepo",
+        "TypeScript",
+        "Tailwind"
+      ],
+      "url": "",
+      "linkLabel": "",
+      "featured": false
+    },
+    {
+      "id": "maritime-calendar",
+      "title": "Maritime Calendar Web Application",
+      "company": "Kenmark ITanSolutions",
+      "description": "Full-stack calendar platform for maritime professionals — public Next.js site plus separate admin app for events, users, enrollment, newsletters, and reports across global timezones.",
+      "highlights": [
+        "Monorepo: public web app + admin dashboard with shared Prisma, auth, UI, and email packages",
+        "Firebase Auth integration, MongoDB via Prisma, Jest test setup",
+        "Admin routes for dashboard, events, user management, enrollment, and reporting",
+        "Shared design system and TypeScript config across workspace packages"
+      ],
+      "tags": [
+        "Next.js",
+        "Prisma",
+        "MongoDB",
+        "Firebase",
+        "Monorepo"
+      ],
+      "url": "",
+      "linkLabel": "",
+      "featured": false
+    },
+    {
+      "id": "aerosailors",
+      "title": "Aerosailors Ecommerce Platform",
+      "company": "Kenmark ITanSolutions · Aerosailors",
+      "description": "Next.js ecommerce storefront with Prisma/MongoDB CMS, product catalog, checkout, admin marketing tools, email notifications, and SEO optimization.",
+      "highlights": [
+        "Full ecommerce flow: homepage, collections, about, contact, and admin CMS pages",
+        "Prisma + MongoDB content management with admin API routes",
+        "Email notification system, SEO audit implementation, and WebP media handling",
+        "Tailwind CSS, Radix UI component patterns"
+      ],
+      "tags": [
+        "Next.js",
+        "Prisma",
+        "MongoDB",
+        "Ecommerce",
+        "CMS"
+      ],
+      "url": "",
+      "linkLabel": "",
+      "featured": false
+    },
+    {
+      "id": "diamond-sensations",
+      "title": "Diamond Sensations Ecommerce",
+      "company": "Kenmark ITanSolutions · Diamond Sensations",
+      "description": "Client ecommerce platform with marketing site, product gallery, blog, FAQ, checkout, and admin marketing CMS — built on the ecommerce-in-a-box Next.js stack with payment gateway integration.",
+      "highlights": [
+        "Public storefront: homepage, gallery, blog, FAQ, contact, and product pages",
+        "Admin marketing tools at /admin/marketing/* with Prisma CMS models",
+        "Razorpay/Stripe payment readiness and MongoDB-backed content",
+        "SEO strategy docs and email notification workflows"
+      ],
+      "tags": [
+        "Next.js",
+        "Prisma",
+        "MongoDB",
+        "Razorpay",
+        "CMS"
+      ],
+      "url": "",
+      "linkLabel": "",
+      "featured": false
+    },
+    {
+      "id": "smaaash-api",
+      "title": "Smaaash Express API Backend",
+      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
+      "description": "Production Express.js API powering Smaaash booking and admin operations — Sequelize/MySQL, JWT key-ring rotation, Razorpay callbacks, CSRF, rate limiting, and Swagger documentation.",
+      "highlights": [
+        "Multi-role route groups: client, admin, centerHead, gameHost, superAdmin, voucher",
+        "Razorpay payment verification, wallet/credits, order management, and cron jobs",
+        "JWT rotation, Helmet, CORS, express-rate-limit, Winston/Pino logging",
+        "OpenAPI/Swagger docs, Vitest tests, and offer audit digest emails"
+      ],
+      "tags": [
+        "Express",
+        "Sequelize",
+        "MySQL",
+        "JWT",
+        "Razorpay"
+      ],
+      "url": "",
+      "linkLabel": "",
+      "featured": false
+    },
+    {
+      "id": "nixa",
+      "title": "Nixa Corporate Website & Admin",
+      "company": "Kenmark ITanSolutions · Nixa",
+      "description": "pnpm monorepo with public Next.js website and admin dashboard for corporate governance — compliance, board/committee management, documents, contacts, and settings with PostgreSQL/Prisma.",
+      "highlights": [
+        "Separate web and admin Next.js 16 apps with shared UI and database packages",
+        "Admin modules for governance, compliance, CSR, and document management",
+        "PostgreSQL via Prisma, PM2 production deployment configuration",
+        "Shared component library across monorepo workspaces"
+      ],
+      "tags": [
+        "Next.js",
+        "Prisma",
+        "PostgreSQL",
+        "Monorepo",
+        "Admin CMS"
+      ],
+      "url": "",
+      "linkLabel": "",
+      "featured": false
+    }
+  ],
+  "experience": [
+    {
+      "id": "1",
+      "company": "Kenmark ITanSolutions",
+      "role": "Full Stack Developer",
+      "period": "2023 — Present · 2 yrs 9 mos",
+      "description": "Delivering full stack solutions across 10+ production client projects. Built NASU airport lighting HMI (React, Socket.IO, Modbus), the complete Smaaash platform (marketing site, booking engine, Express API, admin dashboard), INMARCO conference websites, Maritime Calendar app, and multiple ecommerce platforms (Aerosailors, Diamond Sensations, Nixa). Work spans Next.js/React frontends, Express/Node APIs, Prisma/Sequelize databases, JWT/RBAC auth, Razorpay payments, real-time systems, and Turborepo monorepos."
+    }
+  ],
+  "education": [
+    {
+      "id": "1",
+      "degree": "Bachelor of Computer Engineering",
+      "institution": "University of Mumbai",
+      "location": "Maharashtra, India",
+      "period": "2020 — 2023"
+    },
+    {
+      "id": "2",
+      "degree": "Diploma in Information Technology",
+      "institution": "Maharashtra State Board of Technical Education (MSBTE)",
+      "location": "Maharashtra, India",
+      "period": "2018 — 2020"
+    }
+  ],
+  "certifications": [
+    {
+      "id": "1",
+      "name": "Front End Development Libraries (React.js)",
+      "issuer": "freeCodeCamp",
+      "year": "2023"
+    },
+    {
+      "id": "2",
+      "name": "JavaScript Algorithms and Data Structures",
+      "issuer": "freeCodeCamp",
+      "year": "2022"
+    }
+  ],
+  "theme": {
+    "primary": "oklch(0.653 0.185 33.5)",
+    "accent": "oklch(0.92 0.16 102)",
+    "background": "oklch(1.000 0.000 0)",
+    "surface": "oklch(0.97 0.005 95)",
+    "ink": "oklch(0.15 0 0)"
+  },
+  "seo": {
+    "title": "Irshad Khan — Full Stack Developer | Kenmark ITanSolutions",
+    "description": "Full stack developer with 2.5 years and 10+ production projects at Kenmark ITanSolutions. NASU, Smaaash, INMARCO, ecommerce & booking platforms. React, Next.js, Node.js, Mumbai."
+  }
+}
