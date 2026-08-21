@@ -40,13 +40,9 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY) as ColorMode | null;
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    // Default to light; only honor an explicit user choice from the toggle
     const initial: ColorMode =
-      stored === "light" || stored === "dark"
-        ? stored
-        : prefersDark
-          ? "dark"
-          : "light";
+      stored === "light" || stored === "dark" ? stored : "light";
     setModeState(initial);
     applyMode(initial);
   }, []);
