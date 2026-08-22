@@ -43,15 +43,11 @@ export function TypeWriter({
   onDone,
 }: TypeWriterProps) {
   const reduced = useReducedMotion();
-  const [shown, setShown] = useState(reduced ? text : "");
-  const [done, setDone] = useState(reduced);
+  const [shown, setShown] = useState("");
+  const [done, setDone] = useState(false);
 
   useEffect(() => {
-    if (reduced) {
-      setShown(text);
-      setDone(true);
-      return;
-    }
+    if (reduced) return;
 
     let cancelled = false;
     let intervalId: ReturnType<typeof setInterval> | undefined;
@@ -100,6 +96,9 @@ export function TypeWriter({
     };
   }, [text, speed, delay, loopDelay, loop, reduced, onDone]);
 
+  const display = reduced ? text : shown;
+  const isDone = reduced || done;
+
   const layoutClass =
     fit === "inline"
       ? "relative inline-grid max-w-full align-top"
@@ -125,11 +124,11 @@ export function TypeWriter({
         className="col-start-1 row-start-1 self-start justify-self-start whitespace-pre-wrap"
         aria-hidden
       >
-        {shown}
+        {display}
         {caret ? (
           <span
             className={`ml-0.5 inline-block w-[0.08em] align-baseline bg-[var(--color-primary)] ${
-              done ? "opacity-40 animate-pulse" : "animate-pulse"
+              isDone ? "opacity-40 animate-pulse" : "animate-pulse"
             }`}
             style={{ height: "0.85em" }}
           />

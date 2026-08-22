@@ -4,7 +4,6 @@ import {
   createContext,
   useCallback,
   useContext,
-  useEffect,
   useState,
   type ReactNode,
 } from "react";
@@ -29,6 +28,7 @@ function applyMode(mode: ColorMode) {
   root.style.colorScheme = mode;
 }
 
+/** Prefer DOM class set by themeInitScript; default light. */
 function readInitialMode(): ColorMode {
   if (typeof document === "undefined") return "light";
   if (document.documentElement.classList.contains("dark")) return "dark";
@@ -37,15 +37,6 @@ function readInitialMode(): ColorMode {
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [mode, setModeState] = useState<ColorMode>(readInitialMode);
-
-  useEffect(() => {
-    const stored = localStorage.getItem(STORAGE_KEY) as ColorMode | null;
-    // Default to light; only honor an explicit user choice from the toggle
-    const initial: ColorMode =
-      stored === "light" || stored === "dark" ? stored : "light";
-    setModeState(initial);
-    applyMode(initial);
-  }, []);
 
   const setMode = useCallback((next: ColorMode) => {
     setModeState(next);

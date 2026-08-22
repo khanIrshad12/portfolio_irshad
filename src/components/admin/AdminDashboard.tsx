@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { PortfolioData, Project, Experience, Skill, Education, Certification, ShowcaseStat } from "@/lib/types";
+import type { PortfolioData, Project, Experience, Skill } from "@/lib/types";
 
 type Tab =
   | "profile"

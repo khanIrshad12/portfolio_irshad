@@ -4,7 +4,7 @@ Personal resume portfolio with neo-brutalism design, Framer Motion animations, a
 
 ## Stack
 
-- **Next.js 15** (App Router)
+- **Next.js 16** (App Router)
 - **TypeScript**
 - **Tailwind CSS v4**
 - **Framer Motion**

@@ -1,8 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+
+function subscribeFinePointer(onStoreChange: () => void) {
+  const fine = window.matchMedia("(pointer: fine)");
+  const hover = window.matchMedia("(hover: hover)");
+  fine.addEventListener("change", onStoreChange);
+  hover.addEventListener("change", onStoreChange);
+  return () => {
+    fine.removeEventListener("change", onStoreChange);
+    hover.removeEventListener("change", onStoreChange);
+  };
+}
+
+function getFinePointerSnapshot() {
+  return (
+    window.matchMedia("(pointer: fine)").matches &&
+    window.matchMedia("(hover: hover)").matches
+  );
+}
 
 /**
  * Brutal / playful custom cursor — hard-shadow disc + trailing ring.
@@ -10,7 +28,12 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
  */
 export function ThemeCursor() {
   const reduced = useReducedMotion();
-  const [enabled, setEnabled] = useState(false);
+  const canUseCustomCursor = useSyncExternalStore(
+    subscribeFinePointer,
+    getFinePointerSnapshot,
+    () => false,
+  );
+  const enabled = canUseCustomCursor && !reduced;
   const [hovering, setHovering] = useState(false);
   const [visible, setVisible] = useState(false);
 
@@ -22,13 +45,8 @@ export function ThemeCursor() {
   const ringY = useSpring(rawY, { stiffness: 180, damping: 22, mass: 0.6 });
 
   useEffect(() => {
-    if (reduced) return;
+    if (!enabled) return;
 
-    const fine = window.matchMedia("(pointer: fine)").matches;
-    const hover = window.matchMedia("(hover: hover)").matches;
-    if (!fine || !hover) return;
-
-    setEnabled(true);
     document.documentElement.classList.add("has-theme-cursor");
 
     const onMove = (e: MouseEvent) => {
@@ -66,7 +84,7 @@ export function ThemeCursor() {
       document.removeEventListener("mouseover", onOver);
       document.removeEventListener("mouseout", onOut);
     };
-  }, [reduced, rawX, rawY]);
+  }, [enabled, rawX, rawY]);
 
   if (!enabled) return null;
 

@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useSyncExternalStore } from "react";
 import { motion } from "framer-motion";
 import { useTheme } from "./ThemeProvider";
 import { useReducedMotion, bounceTransition } from "@/hooks/useReducedMotion";
 
+const emptySubscribe = () => () => {};
+
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const { isDark, toggle } = useTheme();
   const reduced = useReducedMotion();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => setMounted(true), []);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   return (
     <motion.button
