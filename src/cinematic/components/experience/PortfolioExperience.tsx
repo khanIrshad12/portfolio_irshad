@@ -169,6 +169,14 @@ function PortfolioExperienceInner() {
 
       <StickyPageBlur />
 
+      {/* Outside motion surface — filter/clipPath would break position:fixed */}
+      {entered && (
+        <Navbar
+          activeSection={activeSection}
+          onNavigate={scrollToSection}
+        />
+      )}
+
       <motion.div
         key={entered ? "surface-live" : "surface-boot"}
         initial={
@@ -198,11 +206,6 @@ function PortfolioExperienceInner() {
         }
         transition={{ duration: 0.85, ease: EASE_OUT_EXPO }}
       >
-        <Navbar
-          activeSection={activeSection}
-          onNavigate={scrollToSection}
-        />
-
         <main className="relative z-10">
           <HeroAboutBridge>
             <HeroSection

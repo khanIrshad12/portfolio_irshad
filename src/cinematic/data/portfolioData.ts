@@ -250,6 +250,7 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
   {
     id: 'frontend-core',
     title: 'Frontend & UI Frameworks',
+    shortTitle: 'Frontend',
     subtitle: 'High-Performance Web Applications, Dynamic State & Responsive Design',
     iconName: 'Layout',
     skills: [
@@ -264,6 +265,7 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
   {
     id: 'backend-protocols',
     title: 'Backend & Communication Protocols',
+    shortTitle: 'Backend',
     subtitle: 'Real-Time Telemetry, Microservices & Hardware Integration',
     iconName: 'Server',
     skills: [
@@ -277,6 +279,7 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
   {
     id: 'database-orm',
     title: 'Databases, ORM & Languages',
+    shortTitle: 'Data & Lang',
     subtitle: 'Relational Schemas, Document Stores & Multi-Language Core',
     iconName: 'Database',
     skills: [
@@ -290,6 +293,7 @@ export const SKILL_CATEGORIES: SkillCategory[] = [
   {
     id: 'additional-strengths',
     title: 'Creative, Analytical & 3D Skills',
+    shortTitle: 'Creative',
     subtitle: 'Design Craft, Problem Solving & Visual Computation',
     iconName: 'Sparkles',
     skills: [

@@ -95,13 +95,15 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const reduced = useReducedMotion();
   const [progress, setProgress] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(soundFx.getIsMuted());
+  const [isAudioSuspended, setIsAudioSuspended] = useState(soundFx.isSuspended());
   const [currentLogIndex, setCurrentLogIndex] = useState(0);
   const [accelerated, setAccelerated] = useState(false);
   const [visible, setVisible] = useState(true);
 
   const stepRef = useRef(-1);
   const logBucketRef = useRef(-1);
+  const lastPercentRef = useRef(-1);
   const completedRef = useRef(false);
   const startRef = useRef(0);
   const durationRef = useRef(reduced ? 400 : BOOT_DURATION_MS);
@@ -111,8 +113,27 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   mutedRef.current = isMuted;
 
   useEffect(() => {
+    const unsubscribe = soundFx.subscribe((state) => {
+      setIsMuted(state.isMuted);
+      setIsAudioSuspended(state.isSuspended);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
     document.documentElement.classList.add("boot-locked");
+    // Attempt early unlock if allowed by browser
+    soundFx.unlock();
     return () => document.documentElement.classList.remove("boot-locked");
+  }, []);
+
+  // Global keydown to unlock audio on any key press
+  useEffect(() => {
+    const handleKeyDown = () => {
+      soundFx.unlock();
+    };
+    window.addEventListener("keydown", handleKeyDown, { passive: true });
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   useEffect(() => {
@@ -124,6 +145,19 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       const next = eased * 100;
       progressRef.current = next;
       setProgress(next);
+
+      // Percentage tick audio on every percentage change
+      const currentRoundedPercent = Math.floor(next);
+      if (
+        currentRoundedPercent !== lastPercentRef.current &&
+        currentRoundedPercent >= 0 &&
+        currentRoundedPercent <= 100
+      ) {
+        lastPercentRef.current = currentRoundedPercent;
+        if (!mutedRef.current) {
+          soundFx.playPercentTick(currentRoundedPercent);
+        }
+      }
 
       const actualStep = stepIndexForProgress(next);
       if (actualStep !== stepRef.current) {
@@ -159,15 +193,31 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const StepIcon = activeStep.icon;
   const phaseNum = BOOT_STEPS.findIndex((s) => s.tag === activeStep.tag) + 1;
 
-  const handleToggleMute = () => {
-    soundFx.unlock();
-    const nextMuted = !isMuted;
-    setIsMuted(nextMuted);
-    soundFx.setMuted(nextMuted);
-    if (!nextMuted) soundFx.playBlip(900, 0.05);
+  const handleToggleMute = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (isAudioSuspended && !isMuted) {
+      soundFx.unlock();
+      soundFx.playBlip(980, 0.06);
+    } else {
+      const nextMuted = !isMuted;
+      setIsMuted(nextMuted);
+      soundFx.setMuted(nextMuted);
+      if (!nextMuted) {
+        soundFx.unlock();
+        soundFx.playBlip(900, 0.05);
+      }
+    }
   };
 
-  const handleAccelerate = () => {
+  const handleContainerPointerDown = () => {
+    if (isAudioSuspended && !isMuted) {
+      soundFx.unlock();
+      soundFx.playBlip(960, 0.04);
+    }
+  };
+
+  const handleAccelerate = (e: React.MouseEvent) => {
+    e.stopPropagation();
     soundFx.unlock();
     setAccelerated(true);
     const p = progressRef.current / 100;
@@ -200,7 +250,8 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
       {visible && (
         <motion.div
           key="preloader-shell"
-          className="fixed inset-0 z-10000 flex select-none flex-col justify-between overflow-hidden bg-[#030303] p-6 font-mono text-white sm:p-10"
+          onPointerDown={handleContainerPointerDown}
+          className="fixed inset-0 z-10000 flex h-[100dvh] w-full select-none flex-col justify-between overflow-y-auto overflow-x-hidden bg-[#030303] p-4 font-mono text-white sm:p-6 md:p-8 lg:p-10"
           role="dialog"
           aria-modal="true"
           aria-label="System initialization"
@@ -214,13 +265,13 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
         >
           {/* Ambient auras */}
           <div className="pointer-events-none absolute inset-0">
-            <div className="absolute left-1/2 top-1/2 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[140px]" />
-            <div className="absolute left-1/3 top-1/3 h-[300px] w-[300px] rounded-full bg-indigo-500/10 blur-[100px]" />
+            <div className="absolute left-1/2 top-1/2 h-[300px] w-[300px] sm:h-[450px] sm:w-[450px] md:h-[600px] md:w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/10 blur-[100px] sm:blur-[140px]" />
+            <div className="absolute left-1/3 top-1/3 h-[200px] w-[200px] sm:h-[300px] sm:w-[300px] rounded-full bg-indigo-500/10 blur-[80px] sm:blur-[100px]" />
           </div>
 
           {/* Cyber grid */}
           <div
-            className="pointer-events-none absolute inset-0 bg-[size:4rem_4rem]"
+            className="pointer-events-none absolute inset-0 bg-[size:3rem_3rem] sm:bg-[size:4rem_4rem]"
             style={{
               backgroundImage:
                 "linear-gradient(to right, #ffffff05 1px, transparent 1px), linear-gradient(to bottom, #ffffff05 1px, transparent 1px)",
@@ -228,36 +279,54 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
           />
 
           {/* Top bar */}
-          <div className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between border-b border-white/10 pb-4">
-            <div className="flex items-center gap-3">
-              <span className="relative flex h-2.5 w-2.5">
+          <div className="relative z-10 mx-auto flex w-full max-w-6xl items-center justify-between gap-2 border-b border-white/10 pb-3 sm:pb-4">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <span className="relative flex h-2 w-2 shrink-0 sm:h-2.5 sm:w-2.5">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-60" />
-                <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-cyan-400" />
+                <span className="relative inline-flex h-full w-full rounded-full bg-cyan-400" />
               </span>
-              <div className="flex flex-col">
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-white">
+              <div className="flex min-w-0 flex-col">
+                <span className="truncate text-[10px] font-bold uppercase tracking-[0.15em] text-white sm:text-xs sm:tracking-[0.2em]">
                   IRSHAD KHAN // PORTFOLIO
                 </span>
-                <span className="text-[9px] uppercase tracking-widest text-cyan-400/80">
+                <span className="hidden truncate text-[8px] uppercase tracking-widest text-cyan-400/80 xs:inline-block sm:text-[9px]">
                   SYSTEMS ARCHITECT &amp; CREATIVE DEVELOPER
                 </span>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex shrink-0 items-center gap-1.5 sm:gap-2.5">
               <button
                 type="button"
                 onClick={handleToggleMute}
-                className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 p-2 text-[10px] text-white/80 transition-all hover:border-cyan-400/50 hover:bg-white/10 sm:px-3 sm:py-1.5"
-                title={isMuted ? "Unmute Audio Feedback" : "Mute Audio Feedback"}
+                className={`flex cursor-pointer items-center gap-1 sm:gap-1.5 rounded-lg border px-2 py-1 text-[9px] sm:px-3 sm:py-1.5 sm:text-[10px] font-semibold transition-all ${
+                  isMuted
+                    ? "border-rose-500/30 bg-rose-950/20 text-rose-300 hover:border-rose-400/50 hover:bg-rose-950/40"
+                    : isAudioSuspended
+                    ? "border-cyan-400/50 bg-cyan-950/50 text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.25)] hover:border-cyan-400 hover:bg-cyan-900/60"
+                    : "border-white/10 bg-white/5 text-white/80 hover:border-cyan-400/50 hover:bg-white/10"
+                }`}
+                title={
+                  isMuted
+                    ? "Unmute Audio Feedback"
+                    : isAudioSuspended
+                    ? "Click to Enable Audio Feedback"
+                    : "Mute Audio Feedback"
+                }
               >
                 {isMuted ? (
-                  <VolumeX className="h-3.5 w-3.5 text-rose-400" />
+                  <VolumeX className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-rose-400" />
+                ) : isAudioSuspended ? (
+                  <Volume2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 animate-pulse text-cyan-400" />
                 ) : (
-                  <Volume2 className="h-3.5 w-3.5 text-cyan-400" />
+                  <Volume2 className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-cyan-400" />
                 )}
-                <span className="hidden sm:inline">
-                  {isMuted ? "MUTED" : "AUDIO ACTIVE"}
+                <span className="inline">
+                  {isMuted
+                    ? "MUTED"
+                    : isAudioSuspended
+                    ? "ENABLE SOUND"
+                    : "AUDIO ACTIVE"}
                 </span>
               </button>
 
@@ -266,11 +335,12 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
                   type="button"
                   onClick={handleAccelerate}
                   disabled={accelerated}
-                  className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-cyan-500/50 bg-cyan-950/60 px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.2)] transition-all hover:bg-cyan-900/80 disabled:opacity-70"
+                  className="flex cursor-pointer items-center gap-1 sm:gap-1.5 rounded-lg border border-cyan-500/50 bg-cyan-950/60 px-2 py-1 text-[9px] sm:px-3 sm:py-1.5 sm:text-[10px] font-bold uppercase tracking-wider text-cyan-300 shadow-[0_0_12px_rgba(34,211,238,0.2)] transition-all hover:bg-cyan-900/80 disabled:opacity-70"
                 >
-                  <FastForward className="h-3.5 w-3.5" />
+                  <FastForward className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
                   <span>
-                    {accelerated ? "ACCELERATING..." : "SKIP / FAST BOOT"}
+                    {accelerated ? "SPEEDING..." : "SKIP"}
+                    <span className="hidden sm:inline"> / FAST BOOT</span>
                   </span>
                 </button>
               )}
@@ -278,8 +348,9 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
           </div>
 
           {/* Center stage */}
-          <div className="relative z-10 mx-auto my-auto flex w-full max-w-4xl flex-col items-center justify-center py-6 text-center">
-            <div className="relative mb-8 flex h-48 w-48 items-center justify-center sm:h-60 sm:w-60">
+          <div className="relative z-10 mx-auto my-auto flex w-full max-w-4xl flex-col items-center justify-center py-4 text-center sm:py-6">
+            {/* Circular progress loader */}
+            <div className="relative mb-4 flex h-36 w-36 items-center justify-center sm:mb-6 sm:h-48 sm:w-48 md:mb-8 md:h-56 md:w-56">
               <svg
                 className={`absolute inset-0 h-full w-full ${reduced ? "" : "animate-[spin_12s_linear_infinite]"}`}
                 viewBox="0 0 100 100"
@@ -307,7 +378,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
               </svg>
 
               <svg
-                className={`absolute inset-4 h-auto w-auto ${reduced ? "" : "animate-spin-reverse"}`}
+                className={`absolute inset-3 sm:inset-4 h-auto w-auto ${reduced ? "" : "animate-spin-reverse"}`}
                 viewBox="0 0 100 100"
                 aria-hidden
               >
@@ -324,7 +395,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
 
               {/* Progress ring */}
               <svg
-                className="absolute inset-6 h-auto w-auto -rotate-90"
+                className="absolute inset-4 sm:inset-6 h-auto w-auto -rotate-90"
                 viewBox="0 0 100 100"
                 aria-hidden
               >
@@ -356,13 +427,13 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
               </svg>
 
               <div className="z-10 flex flex-col items-center justify-center">
-                <span className="text-4xl font-black tracking-tighter text-white drop-shadow-[0_0_25px_rgba(56,189,248,0.4)] sm:text-6xl">
+                <span className="text-3xl font-black tracking-tighter text-white drop-shadow-[0_0_25px_rgba(56,189,248,0.4)] sm:text-5xl md:text-6xl">
                   {Math.round(progress)}
-                  <span className="font-mono text-xl text-cyan-400 sm:text-2xl">
+                  <span className="font-mono text-lg text-cyan-400 sm:text-xl md:text-2xl">
                     %
                   </span>
                 </span>
-                <span className="mt-1 text-[10px] uppercase tracking-[0.25em] text-white/50">
+                <span className="mt-0.5 sm:mt-1 text-[8px] uppercase tracking-[0.2em] sm:text-[10px] sm:tracking-[0.25em] text-white/50">
                   SYSTEM CALIBRATION
                 </span>
               </div>
@@ -378,41 +449,41 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeStep.tag}
-                initial={reduced ? false : { opacity: 0, y: 14, scale: 0.97 }}
+                initial={reduced ? false : { opacity: 0, y: 12, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={reduced ? undefined : { opacity: 0, y: -12, scale: 0.98 }}
-                transition={{ duration: 0.38, ease: EASE_OUT_EXPO }}
-                className={`w-full max-w-xl rounded-2xl border p-5 shadow-2xl backdrop-blur-xl transition-colors sm:p-6 ${activeStep.border} ${activeStep.bg}`}
+                exit={reduced ? undefined : { opacity: 0, y: -10, scale: 0.98 }}
+                transition={{ duration: 0.35, ease: EASE_OUT_EXPO }}
+                className={`w-full max-w-lg md:max-w-xl rounded-xl sm:rounded-2xl border p-3.5 sm:p-5 md:p-6 shadow-2xl backdrop-blur-xl transition-colors ${activeStep.border} ${activeStep.bg}`}
               >
-                <div className="mb-2 flex items-center justify-between gap-3">
+                <div className="mb-1.5 sm:mb-2 flex items-center justify-between gap-2">
                   <span
-                    className={`flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] ${activeStep.color}`}
+                    className={`flex items-center gap-1.5 sm:gap-2 text-[9px] sm:text-[10px] font-bold uppercase tracking-[0.15em] sm:tracking-[0.25em] ${activeStep.color}`}
                   >
-                    <StepIcon className="h-3.5 w-3.5" />
-                    <span>{activeStep.tag}</span>
+                    <StepIcon className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
+                    <span className="truncate">{activeStep.tag}</span>
                   </span>
-                  <span className="font-mono text-[10px] text-white/40">
+                  <span className="shrink-0 font-mono text-[9px] sm:text-[10px] text-white/40">
                     PHASE {String(phaseNum).padStart(2, "0")}/04
                   </span>
                 </div>
 
-                <h3 className="mb-1.5 text-left text-base font-bold tracking-tight text-white sm:text-lg">
+                <h3 className="mb-1 text-left text-sm font-bold tracking-tight text-white sm:text-base md:text-lg">
                   {activeStep.title}
                 </h3>
-                <p className="text-left font-sans text-xs leading-relaxed text-white/70">
+                <p className="text-left font-sans text-[11px] sm:text-xs leading-relaxed text-white/70">
                   {activeStep.detail}
                 </p>
               </motion.div>
             </AnimatePresence>
 
-            <div className="mt-6 w-full max-w-xl space-y-2">
+            <div className="mt-4 sm:mt-6 w-full max-w-lg md:max-w-xl space-y-1.5 sm:space-y-2">
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/10 p-px">
                 <motion.div
                   className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-sky-400 to-indigo-500 shadow-[0_0_12px_rgba(34,211,238,0.8)]"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <div className="flex items-center justify-between text-[10px] text-white/40">
+              <div className="flex items-center justify-between text-[9px] sm:text-[10px] text-white/40">
                 <span>DIAGNOSTIC TELEMETRY: ACTIVE</span>
                 <span>
                   {progress >= 100
@@ -422,13 +493,25 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
               </div>
             </div>
 
+            {isAudioSuspended && !isMuted && !isFinished && progress < 95 && (
+              <motion.div
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="mt-3 sm:mt-4 flex items-center justify-center gap-1.5 text-[8px] sm:text-[9px] uppercase tracking-[0.2em] text-cyan-400/80"
+              >
+                <Volume2 className="h-3 w-3 animate-pulse text-cyan-400" />
+                <span>Tap anywhere to enable sound</span>
+              </motion.div>
+            )}
+
             <AnimatePresence>
               {(isFinished || progress >= 100) && (
                 <motion.p
                   key="warping"
                   initial={reduced ? false : { opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-6 font-mono text-[10px] uppercase tracking-[0.32em] text-cyan-300/90"
+                  className="mt-4 sm:mt-6 font-mono text-[9px] sm:text-[10px] uppercase tracking-[0.32em] text-cyan-300/90"
                 >
                   Entering system…
                 </motion.p>
@@ -437,11 +520,11 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
           </div>
 
           {/* Bottom log */}
-          <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-3 border-t border-white/10 pt-4 text-[10px] text-white/50 sm:flex-row sm:items-center">
-            <div className="flex max-w-full items-center gap-2 text-cyan-400/90">
-              <Terminal className="h-3.5 w-3.5 shrink-0" />
+          <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-col items-start justify-between gap-2 sm:gap-3 border-t border-white/10 pt-3 sm:pt-4 text-[9px] sm:text-[10px] text-white/50 sm:flex-row sm:items-center">
+            <div className="flex max-w-full items-center gap-1.5 sm:gap-2 text-cyan-400/90 min-w-0">
+              <Terminal className="h-3 w-3 sm:h-3.5 sm:w-3.5 shrink-0" />
               <span className="shrink-0 text-white/40">// LOG:</span>
-              <span className="min-w-0 truncate font-mono text-white/80">
+              <span className="min-w-0 truncate font-mono text-white/80 text-[9px] sm:text-[10px]">
                 <DecryptedText
                   key={LOG_MESSAGES[currentLogIndex]}
                   text={LOG_MESSAGES[currentLogIndex]}
@@ -452,7 +535,7 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
               </span>
             </div>
 
-            <div className="hidden items-center gap-4 text-[9px] uppercase tracking-widest text-white/40 md:flex">
+            <div className="hidden items-center gap-3 sm:gap-4 text-[8px] sm:text-[9px] uppercase tracking-widest text-white/40 md:flex shrink-0">
               <span>FRAMEWORK: REACT 19</span>
               <span>•</span>
               <span>SHADERS: GLSL 3D</span>

@@ -9,6 +9,7 @@ import TiltedCard from "../reactbits/TiltedCard";
 import { DecryptedText } from "../reactbits/DecryptedText";
 import { ShinyText } from "../reactbits/ShinyText";
 import { SectionEdgeBlur } from "../reactbits/SectionEdgeBlur";
+import { ProjectsCoverflow } from "../ui/ProjectsCoverflow";
 
 interface ProjectsSectionProps {
   onSelectProject: (project: Project) => void;
@@ -20,25 +21,25 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   return (
     <section
       id="projects"
-      className="relative z-10 min-h-screen overflow-hidden px-4 py-28 sm:px-8 lg:px-16"
+      className="relative z-10 min-h-screen overflow-x-clip px-4 py-20 sm:px-8 sm:py-28 lg:px-16"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="mb-20">
+        <div className="mb-10 sm:mb-16 md:mb-20">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mb-4 flex items-center gap-3"
+            className="mb-4 flex flex-wrap items-center gap-3"
           >
-            <span className="flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.25em] text-cyan-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-              [ 05 · SELECTED ARCHITECTURE &amp; PRODUCTION PLATFORMS ]
+            <span className="flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-cyan-400 sm:text-xs sm:tracking-[0.25em]">
+              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
+              [ 05 · SELECTED ARCHITECTURE &amp; PLATFORMS ]
             </span>
-            <div className="h-px w-16 bg-white/20" />
+            <div className="hidden h-px w-16 bg-white/20 sm:block" />
           </motion.div>
 
-          <h2 className="max-w-4xl text-4xl font-black uppercase leading-[0.95] tracking-tighter text-white sm:text-6xl md:text-7xl">
-            Engineering Milestones <br />
+          <h2 className="max-w-4xl break-words text-[clamp(1.55rem,7.2vw,3.75rem)] font-black uppercase leading-[1.05] tracking-tighter text-white sm:text-6xl sm:leading-[0.95] md:text-7xl">
+            Engineering Milestones{" "}
             <span className="text-white/50">&amp; Production Platforms.</span>
           </h2>
 
@@ -47,15 +48,25 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="mt-6 max-w-2xl text-base font-normal leading-relaxed text-white/70 sm:text-lg"
+            className="mt-5 max-w-2xl text-sm font-normal leading-relaxed text-white/70 sm:mt-6 sm:text-lg"
           >
             Each system was engineered to solve complex operational challenges
             with precision, speed, and clean modular code architecture.
           </motion.p>
         </div>
 
-        {/* No ParallaxLayer here — parent transforms flatten nested preserve-3d */}
-        <div className="grid grid-cols-1 items-stretch gap-10 md:grid-cols-2 md:gap-12">
+        {/* Mobile: Skiper-style coverflow carousel */}
+        <div className="md:hidden">
+          <ProjectsCoverflow
+            projects={PROJECTS}
+            onSelectProject={onSelectProject}
+            autoplay
+            showNavigation
+          />
+        </div>
+
+        {/* Desktop: tilted card grid */}
+        <div className="hidden grid-cols-1 items-stretch gap-10 md:grid md:grid-cols-2 md:gap-12">
           {PROJECTS.map((project) => (
             <TiltedCard
               key={project.id}
@@ -72,7 +83,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
               className="min-h-[30rem] sm:min-h-[32rem]"
             >
               <div className="tilted-project-surface min-h-[30rem] sm:min-h-[32rem]">
-                <div className="relative" style={{ transformStyle: "preserve-3d" }}>
+                <div
+                  className="relative"
+                  style={{ transformStyle: "preserve-3d" }}
+                >
                   <div className="tilted-pop tilted-pop--meta mb-5 flex items-center justify-between gap-2">
                     <span className="flex items-center gap-1.5 font-mono text-xs font-bold tracking-widest text-cyan-400">
                       <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
@@ -94,7 +108,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                     {project.tagline}
                   </p>
 
-                  <div className="mb-8 grid grid-cols-2 gap-3" style={{ transformStyle: "preserve-3d" }}>
+                  <div
+                    className="mb-8 grid grid-cols-2 gap-3"
+                    style={{ transformStyle: "preserve-3d" }}
+                  >
                     {project.metrics.slice(0, 2).map((m, i) => (
                       <div
                         key={i}
@@ -111,7 +128,10 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                   </div>
                 </div>
 
-                <div className="relative" style={{ transformStyle: "preserve-3d" }}>
+                <div
+                  className="relative"
+                  style={{ transformStyle: "preserve-3d" }}
+                >
                   <div className="tilted-pop tilted-pop--stack mb-6 flex flex-wrap gap-2">
                     {project.techStack.slice(0, 4).map((tech, idx) => (
                       <span

@@ -1,9 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { ShieldCheck, Zap, Radio, RefreshCw, Terminal, Check, Sparkles } from 'lucide-react';
-import { ShinyText } from '../reactbits/ShinyText';
-import { MagneticButton } from '../reactbits/MagneticButton';
+import { ShieldCheck, Zap, Radio, RefreshCw, Terminal, Check } from 'lucide-react';
 
 interface RunwaySimulatorProps {
   onPulseAction?: () => void;
@@ -64,52 +62,56 @@ export const RunwaySimulator: React.FC<RunwaySimulatorProps> = ({ onPulseAction 
   };
 
   return (
-    <div className="w-full bg-[#070707] p-6 sm:p-7 text-white border border-white/10 rounded-2xl shadow-2xl relative shadow-cyan-950/20">
+    <div className="relative w-full rounded-xl border border-white/10 bg-[#070707] p-4 text-white shadow-2xl shadow-cyan-950/20 sm:rounded-2xl sm:p-6 md:p-7">
       {/* Top Header Bar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4 mb-6">
-        <div className="flex items-center gap-3">
-          <div className="relative flex h-3 w-3">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+      <div className="mb-5 flex flex-col gap-3 border-b border-white/10 pb-4 sm:mb-6 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="flex min-w-0 items-start gap-3">
+          <div className="relative mt-1 flex h-3 w-3 shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-cyan-400 opacity-75" />
+            <span className="relative inline-flex h-3 w-3 rounded-full bg-cyan-500" />
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-bold tracking-widest text-cyan-400 uppercase">
-                AIRFIELD LIGHTING &amp; TELEMETRY CONTROLLER
+          <div className="min-w-0">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-cyan-400 sm:text-xs">
+                AIRFIELD TELEMETRY CONTROLLER
               </span>
-              <span className="text-[10px] px-2 py-0.5 bg-white/5 text-white border border-white/15 font-mono uppercase tracking-wider rounded">
+              <span className="rounded border border-white/15 bg-white/5 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-white">
                 RWY 09L / 27R
               </span>
             </div>
-            <p className="text-xs text-white/50 mt-0.5 font-mono">
-              Live Airfield Surface &amp; CCR Constant Current Regulator Matrix
+            <p className="mt-0.5 font-mono text-[10px] text-white/50 sm:text-xs">
+              Live CCR Constant Current Regulator Matrix
             </p>
           </div>
         </div>
 
         {/* Live Metrics Pill */}
-        <div className="flex items-center gap-4 text-xs font-mono bg-[#030303] px-3 py-1.5 rounded-lg border border-white/5">
+        <div className="flex flex-wrap items-center gap-3 rounded-lg border border-white/5 bg-[#030303] px-3 py-1.5 font-mono text-[10px] sm:gap-4 sm:text-xs">
           <div className="flex items-center gap-1.5 text-white/70">
-            <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-            <span>Lat: <strong className="text-white font-bold">{latency}ms</strong></span>
+            <Radio className="h-3.5 w-3.5 text-cyan-400 animate-pulse" />
+            <span>
+              Lat: <strong className="font-bold text-white">{latency}ms</strong>
+            </span>
           </div>
           <div className="flex items-center gap-1.5 text-white/70">
-            <Zap className="w-3.5 h-3.5 text-amber-400" />
-            <span>CCR: <strong className="text-white font-bold">{currentAmps}A</strong></span>
+            <Zap className="h-3.5 w-3.5 text-amber-400" />
+            <span>
+              CCR: <strong className="font-bold text-white">{currentAmps}A</strong>
+            </span>
           </div>
-          <div className="hidden sm:flex items-center gap-1.5 text-emerald-400">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span className="uppercase font-bold">Modbus OK</span>
+          <div className="flex items-center gap-1.5 text-emerald-400">
+            <ShieldCheck className="h-3.5 w-3.5" />
+            <span className="font-bold uppercase">Modbus OK</span>
           </div>
         </div>
       </div>
 
       {/* Visual Airfield Runway Graphic & Circuit Visualizer */}
-      <div className="relative w-full bg-[#030303] border border-white/10 rounded-xl p-5 mb-6 overflow-hidden">
+      <div className="relative mb-5 w-full overflow-hidden rounded-xl border border-white/10 bg-[#030303] p-3 sm:mb-6 sm:p-5">
         {/* Airfield Runway Graphic */}
-        <div className="relative h-24 md:h-28 w-full flex items-center justify-center">
+        <div className="relative flex h-20 w-full items-center justify-center md:h-28">
           {/* Main Runway Tarmac Stripe */}
-          <div className="w-full h-12 bg-[#0c0c0c] border-y border-white/10 rounded-md relative flex items-center justify-between px-3">
+          <div className="relative flex h-10 w-full items-center justify-between rounded-md border-y border-white/10 bg-[#0c0c0c] px-2 sm:h-12 sm:px-3">
             {/* Approach Crossbars (Left) */}
             <div className="flex items-center gap-1">
               <div className={`w-1 h-8 rounded-sm transition-all duration-300 ${cat3Active ? 'bg-amber-100 shadow-[0_0_8px_#ffffff]' : 'bg-black'}`} style={{ opacity: cat3Active ? intensityStep * 0.2 : 0.2 }} />
@@ -205,13 +207,20 @@ export const RunwaySimulator: React.FC<RunwaySimulatorProps> = ({ onPulseAction 
         </div>
 
         {/* Live Status Overlay Footnote */}
-        <div className="flex flex-wrap items-center justify-between text-[11px] font-mono text-white/50 mt-3 pt-3 border-t border-white/10">
-          <div className="flex items-center gap-2">
-            <Check className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="uppercase tracking-wider">FAA / ICAO Annex 14 Photometric Compliant</span>
+        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 pt-3 font-mono text-[10px] text-white/50 sm:text-[11px]">
+          <div className="flex min-w-0 items-center gap-2">
+            <Check className="h-3.5 w-3.5 shrink-0 text-cyan-400" />
+            <span className="truncate uppercase tracking-wider">
+              FAA / ICAO Annex 14 Compliant
+            </span>
           </div>
           <div>
-            <span className="uppercase tracking-wider">Packets: <strong className="text-white">{packetsCount.toLocaleString()}</strong></span>
+            <span className="uppercase tracking-wider">
+              Packets:{" "}
+              <strong className="text-white">
+                {packetsCount.toLocaleString()}
+              </strong>
+            </span>
           </div>
         </div>
       </div>
@@ -291,13 +300,17 @@ export const RunwaySimulator: React.FC<RunwaySimulatorProps> = ({ onPulseAction 
       </div>
 
       {/* Terminal Live Telemetry Stream */}
-      <div className="mt-4 bg-[#030303] p-3.5 rounded-xl border border-white/10 font-mono text-[11px]">
-        <div className="flex items-center justify-between text-white/40 pb-1.5 mb-2.5 border-b border-white/10">
-          <div className="flex items-center gap-1.5 text-cyan-400">
-            <Terminal className="w-3.5 h-3.5" />
-            <span className="uppercase tracking-widest text-[10px] font-bold">MODBUS TCP &amp; WEBSOCKET PACKET LOG</span>
+      <div className="mt-4 rounded-xl border border-white/10 bg-[#030303] p-3 font-mono text-[10px] sm:p-3.5 sm:text-[11px]">
+        <div className="mb-2.5 flex items-center justify-between gap-2 border-b border-white/10 pb-1.5 text-white/40">
+          <div className="flex min-w-0 items-center gap-1.5 text-cyan-400">
+            <Terminal className="h-3.5 w-3.5 shrink-0" />
+            <span className="truncate text-[9px] font-bold uppercase tracking-widest sm:text-[10px]">
+              MODBUS TCP &amp; WS PACKET LOG
+            </span>
           </div>
-          <span className="text-[9px] uppercase tracking-widest text-white/40">60 FPS BUFFER</span>
+          <span className="shrink-0 text-[9px] uppercase tracking-widest text-white/40">
+            60 FPS
+          </span>
         </div>
         <div className="space-y-1 overflow-hidden">
           {logs.map((log, idx) => (
@@ -305,10 +318,10 @@ export const RunwaySimulator: React.FC<RunwaySimulatorProps> = ({ onPulseAction 
               key={idx}
               className={`truncate ${
                 idx === 0
-                  ? 'text-cyan-400 font-semibold'
+                  ? "font-semibold text-cyan-400"
                   : idx === 1
-                  ? 'text-white'
-                  : 'text-white/40'
+                    ? "text-white"
+                    : "text-white/40"
               }`}
             >
               {log}

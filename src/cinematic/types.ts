@@ -40,6 +40,8 @@ export interface SkillItem {
 export interface SkillCategory {
   id: string;
   title: string;
+  /** Compact label for mobile category chips */
+  shortTitle?: string;
   subtitle: string;
   iconName: string;
   skills: SkillItem[];

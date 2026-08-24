@@ -26,7 +26,7 @@ export function StickyPageBlur() {
   return (
     <motion.div
       aria-hidden
-      className="pointer-events-none fixed inset-x-0 bottom-0 z-[25] h-28 overflow-hidden sm:h-36"
+      className="pointer-events-none fixed inset-x-0 bottom-0 z-[25] hidden h-28 overflow-hidden sm:block sm:h-36"
       style={{ opacity }}
     >
       <div className="relative h-full w-full">

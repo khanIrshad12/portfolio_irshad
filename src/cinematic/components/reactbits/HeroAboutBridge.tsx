@@ -61,7 +61,7 @@ export function HeroAboutBridge({ children }: { children: ReactNode }) {
 
   return (
     <div ref={wrapRef} className="relative">
-      <div className="pointer-events-none sticky top-0 z-[1] h-dvh w-full overflow-hidden">
+      <div className="pointer-events-none sticky top-0 z-[1] h-dvh w-full overflow-hidden opacity-35 sm:opacity-70 md:opacity-100">
         <motion.div
           style={{ y, opacity, scale }}
           className="h-full w-full will-change-transform"
