@@ -1,0 +1,170 @@
+@layer base {
+  .cinematic-root {
+    font-family: var(--font-inter), system-ui, sans-serif;
+    background-color: #030303;
+    color: #f5f5f5;
+  }
+
+  .cinematic-root h1,
+  .cinematic-root h2,
+  .cinematic-root h3,
+  .cinematic-root .font-display {
+    font-family: var(--font-syne), var(--font-inter), system-ui, sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.05em;
+  }
+
+  .cinematic-root code,
+  .cinematic-root pre,
+  .cinematic-root .font-mono,
+  .cinematic-root .mono {
+    font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  }
+}
+
+html:has(.cinematic-root) {
+  background: #030303;
+  color-scheme: dark;
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem;
+}
+
+/* Native CSS smooth fights Lenis — let Lenis own the feel */
+html.lenis-active:has(.cinematic-root),
+html.lenis.lenis-smooth:has(.cinematic-root) {
+  scroll-behavior: auto !important;
+}
+
+/* Modal open: keep wheel on the dialog panel */
+.project-modal-scroll {
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: #38bdf8 #141414;
+}
+
+.project-modal-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.project-modal-scroll::-webkit-scrollbar-track {
+  background: #141414;
+  border-radius: 999px;
+}
+
+.project-modal-scroll::-webkit-scrollbar-thumb {
+  background: #38bdf8;
+  border-radius: 999px;
+}
+
+html:has(.cinematic-root) body {
+  background-color: #030303;
+  color: #f5f5f5;
+  overflow-x: hidden;
+}
+
+/* Lock document scroll during system preloader */
+html.boot-locked,
+html.boot-locked body {
+  overflow: hidden !important;
+}
+
+/* Custom tail cursor — hide native cursor on fine pointers */
+@media (pointer: fine) and (hover: hover) {
+  html.has-tail-cursor,
+  html.has-tail-cursor * {
+    cursor: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.has-tail-cursor,
+  html.has-tail-cursor * {
+    cursor: auto !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html:has(.cinematic-root) {
+    scroll-behavior: auto;
+  }
+
+  .cinematic-root .motion-safe\:animate-ping,
+  .cinematic-root .motion-safe\:animate-bounce,
+  .cinematic-root .motion-safe\:animate-pulse {
+    animation: none !important;
+  }
+}
+
+@keyframes shiny {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+
+@keyframes spin-reverse {
+  to {
+    transform: rotate(-360deg);
+  }
+}
+
+.animate-spin-reverse {
+  animation: spin-reverse 8s linear infinite;
+}
+
+.animate-shiny {
+  animation: shiny 4s linear infinite;
+}
+
+.particle-field {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.vertical-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+html:has(.cinematic-root)::-webkit-scrollbar {
+  width: 5px;
+}
+html:has(.cinematic-root)::-webkit-scrollbar-track {
+  background: #030303;
+}
+html:has(.cinematic-root)::-webkit-scrollbar-thumb {
+  background: #1f1f1f;
+  border-radius: 2px;
+}
+html:has(.cinematic-root)::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
+
+.glass-panel {
+  background: rgba(8, 8, 8, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-panel-hover {
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-panel-hover:hover {
+  background: rgba(14, 14, 14, 0.95);
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 10px 40px -10px rgba(56, 189, 248, 0.2);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 50px rgba(56, 189, 248, 0.2);
+}
+
+.mono-tag {
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+}

@@ -1,0 +1,321 @@
+.tilted-card-figure {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1000px;
+  perspective-origin: 50% 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  outline: none;
+  /* Isolate so parent transforms (parallax) don't flatten our 3D */
+  transform-style: flat;
+}
+
+.tilted-card-mobile-alert {
+  position: absolute;
+  top: 1rem;
+  z-index: 5;
+  text-align: center;
+  font-size: 0.75rem;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  color: rgba(255, 255, 255, 0.45);
+  display: none;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .tilted-card-mobile-alert {
+    display: block;
+  }
+
+  .tilted-card-caption {
+    display: none !important;
+  }
+}
+
+.tilted-card-inner {
+  position: relative;
+  transform-style: preserve-3d;
+  width: 100%;
+  height: 100%;
+  border-radius: 1rem;
+  will-change: transform;
+  transform-origin: center center;
+}
+
+.tilted-card-depth-plate {
+  position: absolute;
+  inset: 6px;
+  border-radius: 0.9rem;
+  background: linear-gradient(
+    145deg,
+    rgba(56, 189, 248, 0.12),
+    rgba(8, 8, 12, 0.95) 40%,
+    rgba(99, 102, 241, 0.1)
+  );
+  transform: translateZ(-28px) scale(0.98);
+  box-shadow:
+    0 28px 60px rgba(0, 0, 0, 0.65),
+    0 0 40px rgba(56, 189, 248, 0.08);
+  pointer-events: none;
+}
+
+.tilted-card-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  object-fit: cover;
+  border-radius: 15px;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Content sits forward in Z — this is what makes the card feel 3D */
+.tilted-card-content-face {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  transform: translateZ(40px);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tilted-card-figure.is-tilting .tilted-card-content-face {
+  transform: translateZ(92px);
+}
+
+.tilted-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  will-change: transform;
+  transform: translateZ(80px);
+  backface-visibility: hidden;
+}
+
+.tilted-card-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(
+    125deg,
+    rgba(255, 255, 255, 0.14) 0%,
+    transparent 42%,
+    transparent 58%,
+    rgba(56, 189, 248, 0.08) 100%
+  );
+  transform: translateZ(90px);
+  mix-blend-mode: soft-light;
+  opacity: 0.55;
+  transition: opacity 0.35s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tilted-card-figure.is-tilting .tilted-card-glare {
+  opacity: 0.95;
+  transform: translateZ(110px);
+}
+
+.tilted-card-caption {
+  pointer-events: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-radius: 4px;
+  background-color: #0b1220;
+  border: 1px solid rgba(56, 189, 248, 0.45);
+  padding: 4px 10px;
+  font-size: 10px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e2e8f0;
+  opacity: 0;
+  z-index: 3;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* Inner project surface — preserve-3d so children can pop out */
+.tilted-project-surface {
+  position: relative;
+  height: 100%;
+  min-height: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2rem 2.25rem;
+  border-radius: 1rem;
+  background: rgba(10, 10, 12, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 20px 50px rgba(0, 0, 0, 0.45);
+  transform: translateZ(0);
+  transform-style: preserve-3d;
+  transition: border-color 0.3s ease, box-shadow 0.45s ease;
+}
+
+.tilted-project-surface::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  border-radius: 1rem 1rem 0 0;
+  background: linear-gradient(90deg, #22d3ee, #38bdf8, #6366f1);
+  opacity: 0.65;
+  transform: translateZ(12px);
+  transition: opacity 0.3s ease, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.tilted-card-figure.is-tilting .tilted-project-surface {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 28px 70px rgba(0, 0, 0, 0.55),
+    0 0 40px rgba(56, 189, 248, 0.12);
+}
+
+.tilted-card-figure.is-tilting .tilted-project-surface::before {
+  opacity: 1;
+  transform: translateZ(28px);
+}
+
+/*
+ * Pop layers — idle Z depth, then lift further on card hover
+ * so text/UI feels like it comes out of the card.
+ */
+.tilted-pop {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, text-shadow, box-shadow;
+  transition:
+    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+    text-shadow 0.45s ease,
+    box-shadow 0.45s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    background-color 0.3s ease;
+}
+
+.tilted-pop--meta {
+  transform: translateZ(18px);
+}
+
+.tilted-pop--title {
+  transform: translateZ(32px);
+  text-shadow: 0 0 0 transparent;
+}
+
+.tilted-pop--body {
+  transform: translateZ(24px);
+}
+
+.tilted-pop--chip {
+  transform: translateZ(36px);
+}
+
+.tilted-pop--stack {
+  transform: translateZ(28px);
+}
+
+.tilted-pop--cta {
+  transform: translateZ(40px);
+}
+
+.tilted-card-figure.is-tilting .tilted-pop--meta {
+  transform: translateZ(48px);
+}
+
+.tilted-card-figure.is-tilting .tilted-pop--title {
+  transform: translateZ(88px) scale(1.02);
+  text-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.65),
+    0 0 24px rgba(56, 189, 248, 0.25);
+  color: #67e8f9;
+}
+
+.tilted-card-figure.is-tilting .tilted-pop--body {
+  transform: translateZ(58px);
+}
+
+.tilted-card-figure.is-tilting .tilted-pop--chip {
+  transform: translateZ(76px);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.5),
+    0 0 18px rgba(56, 189, 248, 0.12);
+  border-color: rgba(56, 189, 248, 0.35);
+}
+
+.tilted-card-figure.is-tilting .tilted-pop--stack {
+  transform: translateZ(64px);
+}
+
+.tilted-card-figure.is-tilting .tilted-pop--stack > span {
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.tilted-card-figure.is-tilting .tilted-pop--cta {
+  transform: translateZ(92px);
+}
+
+.tilted-card-figure.is-tilting .tilted-pop--cta .tilted-pop-btn {
+  background: #22d3ee;
+  color: #000;
+  border-color: transparent;
+  box-shadow: 0 12px 28px rgba(34, 211, 238, 0.35);
+}
+
+@media (max-width: 640px) {
+  .tilted-project-surface {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .tilted-card-content-face {
+    transform: translateZ(20px);
+  }
+
+  .tilted-card-figure.is-tilting .tilted-card-content-face {
+    transform: translateZ(36px);
+  }
+
+  .tilted-card-depth-plate {
+    transform: translateZ(-12px) scale(0.99);
+  }
+
+  /* Softer pop on small screens — less extreme Z */
+  .tilted-pop--meta { transform: translateZ(8px); }
+  .tilted-pop--title { transform: translateZ(14px); }
+  .tilted-pop--body { transform: translateZ(10px); }
+  .tilted-pop--chip { transform: translateZ(16px); }
+  .tilted-pop--stack { transform: translateZ(12px); }
+  .tilted-pop--cta { transform: translateZ(18px); }
+
+  .tilted-card-figure.is-tilting .tilted-pop--meta { transform: translateZ(22px); }
+  .tilted-card-figure.is-tilting .tilted-pop--title { transform: translateZ(36px) scale(1.01); }
+  .tilted-card-figure.is-tilting .tilted-pop--body { transform: translateZ(26px); }
+  .tilted-card-figure.is-tilting .tilted-pop--chip { transform: translateZ(32px); }
+  .tilted-card-figure.is-tilting .tilted-pop--stack { transform: translateZ(28px); }
+  .tilted-card-figure.is-tilting .tilted-pop--cta { transform: translateZ(40px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tilted-card-inner,
+  .tilted-card-content-face,
+  .tilted-card-depth-plate,
+  .tilted-card-glare,
+  .tilted-card-overlay,
+  .tilted-pop {
+    transform: none !important;
+    transition: none !important;
+    text-shadow: none !important;
+  }
+}

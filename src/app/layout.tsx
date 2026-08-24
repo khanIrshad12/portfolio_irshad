@@ -1,5 +1,13 @@
 import type { Metadata } from "next";
-import { Archivo_Black, Lexend_Mega, Orbitron, Share_Tech_Mono } from "next/font/google";
+import {
+  Archivo_Black,
+  Inter,
+  JetBrains_Mono,
+  Lexend_Mega,
+  Orbitron,
+  Share_Tech_Mono,
+  Syne,
+} from "next/font/google";
 import { getPortfolioData, themeToCssVars } from "@/lib/portfolio";
 import { themeInitScript } from "@/lib/theme-script";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
@@ -31,6 +39,25 @@ const shareTech = Share_Tech_Mono({
   display: "swap",
 });
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-jetbrains-mono",
+  display: "swap",
+});
+
+const syne = Syne({
+  subsets: ["latin"],
+  weight: ["600", "700", "800"],
+  variable: "--font-syne",
+  display: "swap",
+});
+
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getPortfolioData();
   const siteUrl =
@@ -38,8 +65,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(siteUrl),
-    title: data.seo.title,
-    description: data.seo.description,
+    title: "Irshad Khan — Creative Developer & Systems Engineer",
+    description:
+      "Cinematic interactive 3D particle portfolio of Irshad Khan — Creative UI, Full Stack Engineering, Real-Time Airport Systems & WebGL.",
     icons: {
       icon: [
         { url: "/favicon.png", sizes: "32x32", type: "image/png" },
@@ -85,7 +113,7 @@ export default async function RootLayout({
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body
-        className={`${archivoBlack.variable} ${lexendMega.variable} ${orbitron.variable} ${shareTech.variable} antialiased`}
+        className={`${archivoBlack.variable} ${lexendMega.variable} ${orbitron.variable} ${shareTech.variable} ${inter.variable} ${jetbrainsMono.variable} ${syne.variable} antialiased`}
       >
         <ThemeProvider>{children}</ThemeProvider>
       </body>
