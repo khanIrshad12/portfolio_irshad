@@ -165,12 +165,12 @@ export function Projects({ projects }: ProjectsProps) {
                     {project.title}
                   </h3>
                   <p className="text-pretty mt-4 text-sm leading-relaxed text-[var(--color-muted)] md:text-base">
-                    {project.description}
+                    {project.tagline || project.description}
                   </p>
 
-                  {project.highlights && project.highlights.length > 0 && (
+                  {(project.keyContributions ?? project.highlights)?.length ? (
                     <ul className="mt-5 space-y-2">
-                      {project.highlights.map((item) => (
+                      {(project.keyContributions ?? project.highlights)!.map((item) => (
                         <li
                           key={item}
                           className="flex gap-2 text-sm leading-snug md:text-[0.9375rem]"
@@ -185,10 +185,10 @@ export function Projects({ projects }: ProjectsProps) {
                         </li>
                       ))}
                     </ul>
-                  )}
+                  ) : null}
 
                   <div className="mt-5 flex flex-wrap gap-2">
-                    {project.tags.map((tag, ti) => (
+                    {(project.techStack ?? project.tags ?? []).map((tag, ti) => (
                       <span
                         key={tag}
                         className="rounded-full border-2 border-[var(--color-ink)] px-3 py-0.5 text-xs font-semibold uppercase"
@@ -202,10 +202,10 @@ export function Projects({ projects }: ProjectsProps) {
                   </div>
                 </div>
 
-                {project.url && (
+                {(project.liveUrl || project.url) && (
                   <div className="shrink-0 lg:self-end">
                     <Link
-                      href={project.url}
+                      href={project.liveUrl || project.url!}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="brutal-btn brutal-btn-primary text-xs"
@@ -263,20 +263,22 @@ export function Projects({ projects }: ProjectsProps) {
                   )}
                   <h4 className="mt-1 font-semibold">{project.title}</h4>
                   <p className="mt-2 text-sm text-[var(--color-muted)]">
-                    {project.description}
+                    {project.tagline || project.description}
                   </p>
-                  {project.highlights && (
+                  {(project.keyContributions ?? project.highlights) && (
                     <ul className="mt-3 space-y-1">
-                      {project.highlights.slice(0, 2).map((h) => (
+                      {(project.keyContributions ?? project.highlights)!
+                        .slice(0, 2)
+                        .map((h) => (
                         <li key={h} className="text-xs text-[var(--color-muted)]">
                           • {h}
                         </li>
                       ))}
                     </ul>
                   )}
-                  {project.url && (
+                  {(project.liveUrl || project.url) && (
                     <Link
-                      href={project.url}
+                      href={project.liveUrl || project.url!}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-3 inline-block text-sm font-semibold underline"

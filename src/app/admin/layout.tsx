@@ -1,5 +1,5 @@
 import { isAuthenticated } from "@/lib/auth";
-import { AdminNav } from "@/components/admin/AdminNav";
+import "./admin.css";
 
 export default async function AdminLayout({
   children,
@@ -9,8 +9,7 @@ export default async function AdminLayout({
   const authed = await isAuthenticated();
 
   return (
-    <div className="min-h-screen bg-[var(--color-bg)]">
-      {authed && <AdminNav />}
+    <div className={`admin-root ${authed ? "" : "flex min-h-screen items-center justify-center"}`}>
       {children}
     </div>
   );

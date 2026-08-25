@@ -107,7 +107,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
             </div>
 
             <div className="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-4">
-              {project.metrics.map((metric, i) => (
+              {(project.metrics ?? []).map((metric, i) => (
                 <div
                   key={i}
                   className="rounded-xl border border-white/10 bg-[#030303] p-4 shadow-inner"
@@ -139,7 +139,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
                   <span>Architectural Highlights</span>
                 </h3>
                 <ul className="space-y-3 font-mono text-xs text-white/70">
-                  {project.architecture.map((item, idx) => (
+                  {((project.architecture ?? [])).map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2.5">
                       <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
                       <span className="leading-relaxed">{item}</span>
@@ -154,7 +154,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
                   <span>Key Engineering Impact</span>
                 </h3>
                 <ul className="space-y-3 font-mono text-xs text-white/70">
-                  {project.keyContributions.map((item, idx) => (
+                  {((project.keyContributions ?? [])).map((item, idx) => (
                     <li key={idx} className="flex items-start gap-2.5">
                       <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-400" />
                       <span className="leading-relaxed">{item}</span>
@@ -169,7 +169,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({
                 Technologies &amp; Protocols Used
               </div>
               <div className="flex flex-wrap gap-2">
-                {project.techStack.map((tech, i) => (
+                {((project.techStack ?? [])).map((tech, i) => (
                   <span
                     key={i}
                     className="rounded-lg border border-white/10 bg-white/5 px-3 py-1 font-mono text-[11px] uppercase tracking-wider text-white/80"

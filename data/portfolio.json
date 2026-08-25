@@ -6,7 +6,7 @@
     "email": "irshadkhance@gmail.com",
     "phone": "+91 77150 43438",
     "location": "Mumbai, Maharashtra",
-    "resumeUrl": "/resume.pdf",
+    "resumeUrl": "/uploads/resume-1787603649863.pdf",
     "avatarUrl": "",
     "currentCompany": "Kenmark ITanSolutions",
     "currentRole": "Full Stack Developer",
@@ -28,6 +28,64 @@
       "INMARCO, Maritime Calendar, Aerosailors & ecommerce clients — Next.js monorepos",
       "B.E. Computer Engineering — University of Mumbai (2020–2023)"
     ]
+  },
+  "aboutSection": {
+    "displayHeadline": "Engineering Precision & Creative Code",
+    "trueFocusSentence": "ENGINEERING PRECISION & CREATIVE CODE",
+    "summary": "Web developer enthusiast exploring modern web frameworks and UI development stacks. Specializing in high-performance React/Next.js interfaces, real-time industrial telemetry dashboards, 3D WebGL/Canvas graphics, and resilient full-stack architectures."
+  },
+  "aboutStats": [
+    {
+      "id": "experience",
+      "label": "Total Experience",
+      "value": "2 Years 9 Months",
+      "sublabel": "Front-End Developer"
+    },
+    {
+      "id": "location",
+      "label": "Primary Location",
+      "value": "Mumbai",
+      "sublabel": "Maharashtra, India"
+    },
+    {
+      "id": "degree",
+      "label": "Degree",
+      "value": "B.E. Computer",
+      "sublabel": "University of Mumbai"
+    },
+    {
+      "id": "focus",
+      "label": "Domain Focus",
+      "value": "Real-Time UI",
+      "sublabel": "Modbus TCP & WebSockets"
+    }
+  ],
+  "philosophyPillars": [
+    {
+      "id": "pillar-1",
+      "number": "01",
+      "title": "Real-Time Reliability & Industrial Speed",
+      "description": "Whether controlling airport airfield fixtures over Modbus TCP or synchronizing high-concurrency booking engines, sub-second latency and 24/7 failover stability are paramount."
+    },
+    {
+      "id": "pillar-2",
+      "number": "02",
+      "title": "Component Architecture & Accessible UX",
+      "description": "Building 95+ modular, accessible components with Radix UI, Shadcn, and Tailwind CSS creates design systems that scale effortlessly without visual or technical debt."
+    },
+    {
+      "id": "pillar-3",
+      "number": "03",
+      "title": "Creative WebGL & 3D Mathematics",
+      "description": "Fusing 3D modeling, texturing, lighting, and GPU shaders with clean React code enables immersive spatial storytelling while maintaining 60 FPS performance."
+    }
+  ],
+  "systemStatus": {
+    "isAvailable": true,
+    "statusText": "Open to Hire — Roles & Freelance",
+    "location": "Mumbai, India · Remote-friendly worldwide",
+    "currentFocus": "React / Next.js, Real-Time Systems & Creative WebGL",
+    "activeClientSlots": "2y 9m experience · Available now"
   },
   "showcase": [
     {
@@ -56,288 +114,538 @@
       "label": "Certifications"
     }
   ],
-  "skills": [
-    {
-      "name": "Next.js / React",
-      "level": 95
-    },
-    {
-      "name": "TypeScript / JavaScript",
-      "level": 92
-    },
-    {
-      "name": "Node.js / Express / REST API",
-      "level": 90
-    },
-    {
-      "name": "MySQL / MongoDB / Prisma",
-      "level": 88
-    },
-    {
-      "name": "Tailwind / Shadcn / Radix UI",
-      "level": 90
-    },
-    {
-      "name": "Socket.IO / Real-time",
-      "level": 88
-    },
-    {
-      "name": "JWT / Auth / RBAC",
-      "level": 85
-    },
-    {
-      "name": "TanStack Query / Zustand",
-      "level": 85
-    },
-    {
-      "name": "Razorpay / Stripe / Payments",
-      "level": 82
-    }
-  ],
   "projects": [
     {
       "id": "nasu-hmi",
+      "number": "01",
       "title": "Airport Lighting Control System Dashboard",
-      "company": "Kenmark ITanSolutions · NASU",
-      "description": "Real-time industrial HMI for airport runway and taxiway lighting — React, Socket.IO, and Modbus TCP with interactive airfield canvas, CCR control, fault monitoring, and 24/7 multi-server failover.",
-      "highlights": [
+      "category": "Industrial Control & Real-Time Telemetry",
+      "tagline": "Real-time industrial HMI for airport runway and taxiway lighting — React, Socket.IO, and Modbus TCP with interactive airfield canvas, CCR control, fault monitoring, and 24/7 multi-server failover.",
+      "overview": "Real-time industrial HMI for airport runway and taxiway lighting — React, Socket.IO, and Modbus TCP with interactive airfield canvas, CCR control, fault monitoring, and 24/7 multi-server failover.",
+      "architecture": [
         "Canvas airfield map with zoom/pan, drag-and-drop device management, and live status indicators",
-        "WebSocket streaming with 60fps batching, connection health checks, and domain failover",
+        "WebSocket streaming with 60fps batching, connection health checks, and domain failover"
+      ],
+      "keyContributions": [
         "CCR intensity control, utility toggles, global blackout orchestration, and SNMP network view",
         "JWT roles (Admin/Operator/Viewer), system log export, and Python Tornado Modbus backend"
       ],
-      "tags": [
+      "techStack": [
         "React",
         "Socket.IO",
         "Modbus TCP",
         "Python",
         "Canvas API"
       ],
-      "url": "",
+      "metrics": [
+        {
+          "label": "Streaming Cadence",
+          "value": "60 FPS"
+        },
+        {
+          "label": "Uptime Reliability",
+          "value": "24/7 SLA"
+        },
+        {
+          "label": "Hardware Protocols",
+          "value": "Modbus TCP"
+        },
+        {
+          "label": "Airfield Assets",
+          "value": "Runway / Taxiway / PAPI"
+        }
+      ],
+      "accentColor": "#06b6d4",
+      "constellationClusterIndex": 0,
+      "company": "Kenmark ITanSolutions · NASU",
+      "liveUrl": "",
+      "githubUrl": "",
       "linkLabel": "",
       "featured": true
     },
     {
       "id": "smaaash-website",
+      "number": "02",
       "title": "Smaaash Corporate / Media Website",
-      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
-      "description": "Full-stack corporate website on Next.js 15, React 19, MySQL, and Prisma — 95+ components, RBAC admin CMS, OTP party forms, LeadSquared CRM, and enterprise SEO.",
-      "highlights": [
+      "category": "Next.js 15 App Router & Enterprise Architecture",
+      "tagline": "Full-stack corporate website on Next.js 15, React 19, MySQL, and Prisma — 95+ components, RBAC admin CMS, OTP party forms, LeadSquared CRM, and enterprise SEO.",
+      "overview": "Full-stack corporate website on Next.js 15, React 19, MySQL, and Prisma — 95+ components, RBAC admin CMS, OTP party forms, LeadSquared CRM, and enterprise SEO.",
+      "architecture": [
         "95+ components with Radix/shadcn, Tailwind v4, Zustand, TanStack Query",
-        "RBAC admin: SUPERADMIN, HR, CONTENT_MANAGER roles with JWT HTTP-only cookies",
+        "RBAC admin: SUPERADMIN, HR, CONTENT_MANAGER roles with JWT HTTP-only cookies"
+      ],
+      "keyContributions": [
         "OTP-verified party enquiry flows, location-routed emails, GTM/Meta Pixel tracking",
         "Dynamic sitemap, JSON-LD structured data, video optimization up to 90% size reduction"
       ],
-      "tags": [
+      "techStack": [
         "Next.js",
         "Prisma",
         "MySQL",
         "NextAuth",
         "SEO"
       ],
-      "url": "https://www.gosmaaash.com",
+      "metrics": [
+        {
+          "label": "UI Components",
+          "value": "95+ Built"
+        },
+        {
+          "label": "Technical SEO",
+          "value": "~90 / 100"
+        },
+        {
+          "label": "RBAC Security",
+          "value": "4 Privilege Roles"
+        },
+        {
+          "label": "Media Compression",
+          "value": "Sharp.js WebP"
+        }
+      ],
+      "accentColor": "#3b82f6",
+      "constellationClusterIndex": 1,
+      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
+      "liveUrl": "https://www.gosmaaash.com",
+      "githubUrl": "",
       "linkLabel": "Live Website",
       "featured": true
     },
     {
       "id": "smaaash-booking",
+      "number": "03",
       "title": "Smaaash Bookings Engine",
-      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
-      "description": "Customer booking platform for gaming venues — Bowling, Cricket, Go-Karting slot selection, cart, Razorpay checkout, offers, and PWA support in a Next.js 16 monorepo.",
-      "highlights": [
+      "category": "E-Commerce & High-Concurrency Booking",
+      "tagline": "Customer booking platform for gaming venues — Bowling, Cricket, Go-Karting slot selection, cart, Razorpay checkout, offers, and PWA support in a Next.js 16 monorepo.",
+      "overview": "Customer booking platform for gaming venues — Bowling, Cricket, Go-Karting slot selection, cart, Razorpay checkout, offers, and PWA support in a Next.js 16 monorepo.",
+      "architecture": [
         "Dynamic routing per game category with real-time slot availability from API",
-        "Cart, checkout, offers page with complex validation and JWT-secured sessions",
+        "Cart, checkout, offers page with complex validation and JWT-secured sessions"
+      ],
+      "keyContributions": [
         "Razorpay payment integration, GA4, Facebook Pixel, and catalog caching optimizations",
         "Shared TypeScript packages across frontend and Express API via Turborepo"
       ],
-      "tags": [
+      "techStack": [
         "Next.js",
         "Express",
         "Razorpay",
         "MySQL",
         "Turborepo"
       ],
-      "url": "https://bookings.gosmaaash.com",
+      "metrics": [
+        {
+          "label": "Gaming Categories",
+          "value": "Multi-Track"
+        },
+        {
+          "label": "Cart Checkout UX",
+          "value": "Seamless Modal"
+        },
+        {
+          "label": "Validation Engine",
+          "value": "Real-Time Slots"
+        },
+        {
+          "label": "Payments",
+          "value": "Razorpay"
+        }
+      ],
+      "accentColor": "#f59e0b",
+      "constellationClusterIndex": 2,
+      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
+      "liveUrl": "https://bookings.gosmaaash.com",
+      "githubUrl": "",
       "linkLabel": "Live Booking Engine",
       "featured": true
     },
     {
       "id": "smaaash-admin",
+      "number": "04",
       "title": "Smaaash Admin & Operations Dashboard",
-      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
-      "description": "Multi-role React/Vite admin SPA for venue operations — Game Host, Center Head, and Admin portals with booking management, offers, vouchers, analytics, and CSRF-safe API integration.",
-      "highlights": [
+      "category": "Ops Dashboard & Multi-Role Portals",
+      "tagline": "Multi-role React/Vite admin SPA for venue operations — Game Host, Center Head, and Admin portals with booking management, offers, vouchers, analytics, and CSRF-safe API integration.",
+      "overview": "Multi-role React/Vite admin SPA for venue operations — Game Host, Center Head, and Admin portals with booking management, offers, vouchers, analytics, and CSRF-safe API integration.",
+      "architecture": [
         "Three role-based portals: Game Host, Center Head, Admin with separate auth flows",
-        "Bowling/cricket booking schedules, cancellations, order summaries, offer CRUD",
+        "Bowling/cricket booking schedules, cancellations, order summaries, offer CRUD"
+      ],
+      "keyContributions": [
         "PrimeReact DataTables with server-side pagination on high-volume booking lists",
         "CSRF token handling, Vite proxy dev setup, and cross-origin cookie support"
       ],
-      "tags": [
+      "techStack": [
         "React",
         "Vite",
         "TypeScript",
         "PrimeReact",
         "Express API"
       ],
-      "url": "",
+      "metrics": [
+        {
+          "label": "Role Portals",
+          "value": "3 Tiers"
+        },
+        {
+          "label": "Data Tables",
+          "value": "Server-Side"
+        },
+        {
+          "label": "Security",
+          "value": "CSRF Safe"
+        },
+        {
+          "label": "Stack",
+          "value": "React / Vite"
+        }
+      ],
+      "accentColor": "#818cf8",
+      "constellationClusterIndex": 3,
+      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
+      "liveUrl": "",
+      "githubUrl": "",
       "linkLabel": "",
       "featured": true
     },
     {
       "id": "inmarco",
+      "number": "05",
       "title": "INMARCO Conference Websites",
-      "company": "Kenmark ITanSolutions · INMARCO",
-      "description": "Turborepo monorepo delivering INMARCO maritime conference websites (2018, 2022, 2026 editions) — multi-page Next.js 16 apps with papers, galleries, committees, and brochure content.",
-      "highlights": [
+      "category": "Conference Platforms & Monorepos",
+      "tagline": "Turborepo monorepo delivering INMARCO maritime conference websites (2018, 2022, 2026 editions) — multi-page Next.js 16 apps with papers, galleries, committees, and brochure content.",
+      "overview": "Turborepo monorepo delivering INMARCO maritime conference websites (2018, 2022, 2026 editions) — multi-page Next.js 16 apps with papers, galleries, committees, and brochure content.",
+      "architecture": [
         "Three conference site generations in a pnpm/Turborepo workspace with shared utilities",
-        "Next.js 16, React 19, TypeScript, and Tailwind CSS across all editions",
+        "Next.js 16, React 19, TypeScript, and Tailwind CSS across all editions"
+      ],
+      "keyContributions": [
         "Content pages: papers, speakers, organizing committee, image galleries, venue info",
         "Shared packages for logging, error handling, and UI consistency"
       ],
-      "tags": [
+      "techStack": [
         "Next.js",
         "Turborepo",
         "TypeScript",
         "Tailwind"
       ],
-      "url": "",
+      "metrics": [
+        {
+          "label": "Editions",
+          "value": "3 Sites"
+        },
+        {
+          "label": "Framework",
+          "value": "Next.js 16"
+        },
+        {
+          "label": "Workspace",
+          "value": "Turborepo"
+        },
+        {
+          "label": "Shared UI",
+          "value": "pnpm Packages"
+        }
+      ],
+      "accentColor": "#22d3ee",
+      "constellationClusterIndex": 0,
+      "company": "Kenmark ITanSolutions · INMARCO",
+      "liveUrl": "",
+      "githubUrl": "",
       "linkLabel": "",
       "featured": false
     },
     {
       "id": "maritime-calendar",
+      "number": "06",
       "title": "Maritime Calendar Web Application",
-      "company": "Kenmark ITanSolutions",
-      "description": "Full-stack calendar platform for maritime professionals — public Next.js site plus separate admin app for events, users, enrollment, newsletters, and reports across global timezones.",
-      "highlights": [
+      "category": "Full-Stack Calendar & Admin CMS",
+      "tagline": "Full-stack calendar platform for maritime professionals — public Next.js site plus separate admin app for events, users, enrollment, newsletters, and reports across global timezones.",
+      "overview": "Full-stack calendar platform for maritime professionals — public Next.js site plus separate admin app for events, users, enrollment, newsletters, and reports across global timezones.",
+      "architecture": [
         "Monorepo: public web app + admin dashboard with shared Prisma, auth, UI, and email packages",
-        "Firebase Auth integration, MongoDB via Prisma, Jest test setup",
+        "Firebase Auth integration, MongoDB via Prisma, Jest test setup"
+      ],
+      "keyContributions": [
         "Admin routes for dashboard, events, user management, enrollment, and reporting",
         "Shared design system and TypeScript config across workspace packages"
       ],
-      "tags": [
+      "techStack": [
         "Next.js",
         "Prisma",
         "MongoDB",
         "Firebase",
         "Monorepo"
       ],
-      "url": "",
+      "metrics": [
+        {
+          "label": "Apps",
+          "value": "Public + Admin"
+        },
+        {
+          "label": "Auth",
+          "value": "Firebase"
+        },
+        {
+          "label": "Database",
+          "value": "MongoDB"
+        },
+        {
+          "label": "ORM",
+          "value": "Prisma"
+        }
+      ],
+      "accentColor": "#10b981",
+      "constellationClusterIndex": 1,
+      "company": "Kenmark ITanSolutions",
+      "liveUrl": "",
+      "githubUrl": "",
       "linkLabel": "",
       "featured": false
     },
     {
       "id": "aerosailors",
+      "number": "07",
       "title": "Aerosailors Ecommerce Platform",
-      "company": "Kenmark ITanSolutions · Aerosailors",
-      "description": "Next.js ecommerce storefront with Prisma/MongoDB CMS, product catalog, checkout, admin marketing tools, email notifications, and SEO optimization.",
-      "highlights": [
+      "category": "Ecommerce Storefront & CMS",
+      "tagline": "Next.js ecommerce storefront with Prisma/MongoDB CMS, product catalog, checkout, admin marketing tools, email notifications, and SEO optimization.",
+      "overview": "Next.js ecommerce storefront with Prisma/MongoDB CMS, product catalog, checkout, admin marketing tools, email notifications, and SEO optimization.",
+      "architecture": [
         "Full ecommerce flow: homepage, collections, about, contact, and admin CMS pages",
-        "Prisma + MongoDB content management with admin API routes",
+        "Prisma + MongoDB content management with admin API routes"
+      ],
+      "keyContributions": [
         "Email notification system, SEO audit implementation, and WebP media handling",
         "Tailwind CSS, Radix UI component patterns"
       ],
-      "tags": [
+      "techStack": [
         "Next.js",
         "Prisma",
         "MongoDB",
         "Ecommerce",
         "CMS"
       ],
-      "url": "",
+      "metrics": [
+        {
+          "label": "Commerce Flow",
+          "value": "End-to-End"
+        },
+        {
+          "label": "CMS",
+          "value": "Prisma Admin"
+        },
+        {
+          "label": "Media",
+          "value": "WebP Pipeline"
+        },
+        {
+          "label": "SEO",
+          "value": "Optimized"
+        }
+      ],
+      "accentColor": "#ec4899",
+      "constellationClusterIndex": 2,
+      "company": "Kenmark ITanSolutions · Aerosailors",
+      "liveUrl": "",
+      "githubUrl": "",
       "linkLabel": "",
       "featured": false
     },
     {
       "id": "diamond-sensations",
+      "number": "08",
       "title": "Diamond Sensations Ecommerce",
-      "company": "Kenmark ITanSolutions · Diamond Sensations",
-      "description": "Client ecommerce platform with marketing site, product gallery, blog, FAQ, checkout, and admin marketing CMS — built on the ecommerce-in-a-box Next.js stack with payment gateway integration.",
-      "highlights": [
+      "category": "Ecommerce & Marketing CMS",
+      "tagline": "Client ecommerce platform with marketing site, product gallery, blog, FAQ, checkout, and admin marketing CMS — built on the ecommerce-in-a-box Next.js stack with payment gateway integration.",
+      "overview": "Client ecommerce platform with marketing site, product gallery, blog, FAQ, checkout, and admin marketing CMS — built on the ecommerce-in-a-box Next.js stack with payment gateway integration.",
+      "architecture": [
         "Public storefront: homepage, gallery, blog, FAQ, contact, and product pages",
-        "Admin marketing tools at /admin/marketing/* with Prisma CMS models",
+        "Admin marketing tools at /admin/marketing/* with Prisma CMS models"
+      ],
+      "keyContributions": [
         "Razorpay/Stripe payment readiness and MongoDB-backed content",
         "SEO strategy docs and email notification workflows"
       ],
-      "tags": [
+      "techStack": [
         "Next.js",
         "Prisma",
         "MongoDB",
         "Razorpay",
         "CMS"
       ],
-      "url": "",
+      "metrics": [
+        {
+          "label": "Storefront",
+          "value": "Full Catalog"
+        },
+        {
+          "label": "Payments",
+          "value": "Gateway Ready"
+        },
+        {
+          "label": "Admin CMS",
+          "value": "Marketing Tools"
+        },
+        {
+          "label": "Content",
+          "value": "Blog + FAQ"
+        }
+      ],
+      "accentColor": "#a855f7",
+      "constellationClusterIndex": 3,
+      "company": "Kenmark ITanSolutions · Diamond Sensations",
+      "liveUrl": "",
+      "githubUrl": "",
       "linkLabel": "",
       "featured": false
     },
     {
       "id": "smaaash-api",
+      "number": "09",
       "title": "Smaaash Express API Backend",
-      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
-      "description": "Production Express.js API powering Smaaash booking and admin operations — Sequelize/MySQL, JWT key-ring rotation, Razorpay callbacks, CSRF, rate limiting, and Swagger documentation.",
-      "highlights": [
+      "category": "API Backend & Payment Systems",
+      "tagline": "Production Express.js API powering Smaaash booking and admin operations — Sequelize/MySQL, JWT key-ring rotation, Razorpay callbacks, CSRF, rate limiting, and Swagger documentation.",
+      "overview": "Production Express.js API powering Smaaash booking and admin operations — Sequelize/MySQL, JWT key-ring rotation, Razorpay callbacks, CSRF, rate limiting, and Swagger documentation.",
+      "architecture": [
         "Multi-role route groups: client, admin, centerHead, gameHost, superAdmin, voucher",
-        "Razorpay payment verification, wallet/credits, order management, and cron jobs",
+        "Razorpay payment verification, wallet/credits, order management, and cron jobs"
+      ],
+      "keyContributions": [
         "JWT rotation, Helmet, CORS, express-rate-limit, Winston/Pino logging",
         "OpenAPI/Swagger docs, Vitest tests, and offer audit digest emails"
       ],
-      "tags": [
+      "techStack": [
         "Express",
         "Sequelize",
         "MySQL",
         "JWT",
         "Razorpay"
       ],
-      "url": "",
+      "metrics": [
+        {
+          "label": "Framework",
+          "value": "Express.js"
+        },
+        {
+          "label": "ORM",
+          "value": "Sequelize"
+        },
+        {
+          "label": "Payments",
+          "value": "Razorpay"
+        },
+        {
+          "label": "Docs",
+          "value": "OpenAPI"
+        }
+      ],
+      "accentColor": "#f59e0b",
+      "constellationClusterIndex": 0,
+      "company": "Kenmark ITanSolutions · Smaaash Entertainment",
+      "liveUrl": "",
+      "githubUrl": "",
       "linkLabel": "",
       "featured": false
     },
     {
       "id": "nixa",
+      "number": "10",
       "title": "Nixa Corporate Website & Admin",
-      "company": "Kenmark ITanSolutions · Nixa",
-      "description": "pnpm monorepo with public Next.js website and admin dashboard for corporate governance — compliance, board/committee management, documents, contacts, and settings with PostgreSQL/Prisma.",
-      "highlights": [
+      "category": "Corporate Governance Platforms",
+      "tagline": "pnpm monorepo with public Next.js website and admin dashboard for corporate governance — compliance, board/committee management, documents, contacts, and settings with PostgreSQL/Prisma.",
+      "overview": "pnpm monorepo with public Next.js website and admin dashboard for corporate governance — compliance, board/committee management, documents, contacts, and settings with PostgreSQL/Prisma.",
+      "architecture": [
         "Separate web and admin Next.js 16 apps with shared UI and database packages",
-        "Admin modules for governance, compliance, CSR, and document management",
+        "Admin modules for governance, compliance, CSR, and document management"
+      ],
+      "keyContributions": [
         "PostgreSQL via Prisma, PM2 production deployment configuration",
         "Shared component library across monorepo workspaces"
       ],
-      "tags": [
+      "techStack": [
         "Next.js",
         "Prisma",
         "PostgreSQL",
         "Monorepo",
         "Admin CMS"
       ],
-      "url": "",
+      "metrics": [
+        {
+          "label": "Apps",
+          "value": "Web + Admin"
+        },
+        {
+          "label": "Database",
+          "value": "PostgreSQL"
+        },
+        {
+          "label": "ORM",
+          "value": "Prisma"
+        },
+        {
+          "label": "Deploy",
+          "value": "PM2"
+        }
+      ],
+      "accentColor": "#3b82f6",
+      "constellationClusterIndex": 1,
+      "company": "Kenmark ITanSolutions · Nixa",
+      "liveUrl": "",
+      "githubUrl": "",
       "linkLabel": "",
       "featured": false
     }
   ],
   "experience": [
     {
-      "id": "1",
+      "id": "exp-kenmark",
       "company": "Kenmark ITanSolutions",
-      "role": "Full Stack Developer",
-      "period": "2023 — Present · 2 yrs 9 mos",
-      "description": "Delivering full stack solutions across 10+ production client projects. Built NASU airport lighting HMI (React, Socket.IO, Modbus), the complete Smaaash platform (marketing site, booking engine, Express API, admin dashboard), INMARCO conference websites, Maritime Calendar app, and multiple ecommerce platforms (Aerosailors, Diamond Sensations, Nixa). Work spans Next.js/React frontends, Express/Node APIs, Prisma/Sequelize databases, JWT/RBAC auth, Razorpay payments, real-time systems, and Turborepo monorepos."
+      "role": "Front-End Developer",
+      "period": "2022 — Present (2 Years 9 Months)",
+      "location": "Mumbai, India",
+      "type": "Full-Time",
+      "summary": "Lead front-end engineering for mission-critical industrial control dashboards, high-volume consumer booking engines, and scalable corporate enterprise portals.",
+      "highlights": [
+        "Developed real-time industrial control dashboard for airport runway and taxiway lighting systems using React.js, Socket.IO, and Modbus TCP communication protocols",
+        "Built interactive airport layout visualization with zoom/pan capabilities, real-time status indicators, and drag-and-drop device management for runway, taxiway, PAPI, and approach lighting",
+        "Created responsive UI components using HTML5 Canvas, Tailwind CSS, and Radix UI with real-time data visualization, fault monitoring, and remote control capabilities",
+        "Integrated WebSocket communication for live data streaming with optimized batching mechanisms (60fps) and connection health monitoring for continuous operation",
+        "Engineered domain management system with automatic failover, health checks, and multi-server architecture to maintain 24/7 operational availability for airport operations",
+        "Architected Smaaash Bookings Engine handling dynamic multi-category time slots, checkout modals, bundled promotions, and JWT authentication",
+        "Delivered full-stack corporate/media platform with Next.js 15 App Router, React 19, MySQL, Prisma, 95+ custom components, and RBAC permissions"
+      ],
+      "techStack": [
+        "React.js",
+        "Next.js 15",
+        "TypeScript",
+        "Modbus TCP",
+        "Socket.IO",
+        "HTML5 Canvas",
+        "Tailwind CSS",
+        "Radix UI",
+        "Prisma",
+        "MySQL",
+        "Zustand",
+        "TanStack"
+      ],
+      "badge": "2y 9m Experience"
     }
   ],
   "education": [
     {
       "id": "1",
-      "degree": "Bachelor of Computer Engineering",
+      "degree": "Bachelors of Computer Engineering",
       "institution": "University of Mumbai",
       "location": "Maharashtra, India",
-      "period": "2020 — 2023"
+      "period": "2020 — 2023",
+      "details": "Graduated with strong foundations in Computer Engineering, Algorithms, Distributed Systems, Database Management, and Software Architecture."
     },
     {
       "id": "2",
-      "degree": "Diploma in Information Technology",
+      "degree": "Diploma of Information Technology",
       "institution": "Maharashtra State Board of Technical Education (MSBTE)",
       "location": "Maharashtra, India",
-      "period": "2018 — 2020"
+      "period": "2018 — 2020",
+      "details": "Comprehensive technical coursework in Web Technologies, Core Java, Networking, System Programming, and Information Systems."
     }
   ],
   "certifications": [
@@ -355,14 +663,177 @@
     }
   ],
   "theme": {
-    "primary": "oklch(0.653 0.185 33.5)",
-    "accent": "oklch(0.92 0.16 102)",
-    "background": "oklch(1.000 0.000 0)",
-    "surface": "oklch(0.97 0.005 95)",
-    "ink": "oklch(0.15 0 0)"
+    "primary": "#38bdf8",
+    "accent": "#818cf8",
+    "background": "#030303",
+    "surface": "#0a0a0a",
+    "ink": "#f5f5f5"
   },
   "seo": {
     "title": "Irshad Khan — Full Stack Developer | Kenmark ITanSolutions",
     "description": "Full stack developer with 2.5 years and 10+ production projects at Kenmark ITanSolutions. NASU, Smaaash, INMARCO, ecommerce & booking platforms. React, Next.js, Node.js, Mumbai."
-  }
+  },
+  "skillsSection": {
+    "headline": "A Robust Stack",
+    "headlineAccent": "Built for Velocity & Resilience.",
+    "description": "From GPU shader math to PLC register polling, low-latency WebSockets, and modern Next.js 15 architectures."
+  },
+  "skillCategories": [
+    {
+      "id": "frontend-core",
+      "title": "Frontend & UI Frameworks",
+      "shortTitle": "Frontend",
+      "subtitle": "High-Performance Web Applications, Dynamic State & Responsive Design",
+      "iconName": "Layout",
+      "skills": [
+        {
+          "name": "React.js & Next.js (App Router)",
+          "category": "Framework",
+          "proficiency": 96,
+          "highlight": "Next.js 15, React 19, Server Components, SSR/SSG"
+        },
+        {
+          "name": "TypeScript & JavaScript (ESNext)",
+          "category": "Language",
+          "proficiency": 95,
+          "highlight": "Strict typing, modern asynchronous patterns, clean architecture"
+        },
+        {
+          "name": "Tailwind CSS & Shadcn UI",
+          "category": "Styling",
+          "proficiency": 98,
+          "highlight": "Tailwind v4, Radix UI primitives, Material UI, Bootstrap"
+        },
+        {
+          "name": "State Management (Zustand / TanStack / Context)",
+          "category": "State",
+          "proficiency": 94,
+          "highlight": "TanStack Query caching, Zustand stores, Context API"
+        },
+        {
+          "name": "HTML5 Canvas & 3D Animation",
+          "category": "Creative",
+          "proficiency": 90,
+          "highlight": "Canvas 2D, Three.js, WebGL, Framer Motion, 3D modeling"
+        },
+        {
+          "name": "jQuery & Legacy Migration",
+          "category": "Frontend",
+          "proficiency": 90,
+          "highlight": "DOM optimization, responsive refactoring"
+        }
+      ]
+    },
+    {
+      "id": "backend-protocols",
+      "title": "Backend & Communication Protocols",
+      "shortTitle": "Backend",
+      "subtitle": "Real-Time Telemetry, Microservices & Hardware Integration",
+      "iconName": "Server",
+      "skills": [
+        {
+          "name": "Node.js & Express.js",
+          "category": "Backend",
+          "proficiency": 92,
+          "highlight": "REST APIs, middleware, connection pooling, high throughput"
+        },
+        {
+          "name": "Socket.IO & WebSockets",
+          "category": "Network",
+          "proficiency": 95,
+          "highlight": "Sub-50ms live streaming, 60fps packet batching, health checks"
+        },
+        {
+          "name": "Modbus TCP Protocol",
+          "category": "Industrial",
+          "proficiency": 91,
+          "highlight": "Airport lighting registers, CCR control, PLC telemetry polling"
+        },
+        {
+          "name": "Auth.js & JWT Authentication",
+          "category": "Security",
+          "proficiency": 90,
+          "highlight": "HTTP-only cookies, bcrypt, Role-Based Access Control (RBAC)"
+        },
+        {
+          "name": "Selenium & Test Automation",
+          "category": "Testing",
+          "proficiency": 85,
+          "highlight": "Automated browser validation, end-to-end UI verification"
+        }
+      ]
+    },
+    {
+      "id": "database-orm",
+      "title": "Databases, ORM & Languages",
+      "shortTitle": "Data & Lang",
+      "subtitle": "Relational Schemas, Document Stores & Multi-Language Core",
+      "iconName": "Database",
+      "skills": [
+        {
+          "name": "MySQL & Prisma ORM",
+          "category": "Database",
+          "proficiency": 92,
+          "highlight": "Schema migrations, indexed queries, relational data models"
+        },
+        {
+          "name": "MongoDB",
+          "category": "NoSQL",
+          "proficiency": 88,
+          "highlight": "Document collections, aggregation pipelines, dynamic schemas"
+        },
+        {
+          "name": "Java (Core Java)",
+          "category": "Language",
+          "proficiency": 85,
+          "highlight": "Object-oriented programming, data structures, concurrency"
+        },
+        {
+          "name": "Python",
+          "category": "Language",
+          "proficiency": 84,
+          "highlight": "Scripting, algorithmic logic, backend utilities"
+        },
+        {
+          "name": "Sharp.js & Media Optimization",
+          "category": "Media",
+          "proficiency": 88,
+          "highlight": "Automated WebP conversion, BLOB storage pipelines"
+        }
+      ]
+    },
+    {
+      "id": "additional-strengths",
+      "title": "Creative, Analytical & 3D Skills",
+      "shortTitle": "Creative",
+      "subtitle": "Design Craft, Problem Solving & Visual Computation",
+      "iconName": "Sparkles",
+      "skills": [
+        {
+          "name": "3D Modeling, Texturing & Lighting",
+          "category": "3D Graphics",
+          "proficiency": 90,
+          "highlight": "Spatial scene design, materials, procedural lighting, 3D animation"
+        },
+        {
+          "name": "Enterprise SEO & JSON-LD",
+          "category": "Optimization",
+          "proficiency": 92,
+          "highlight": "Structured data, dynamic sitemaps, robots.txt, ~90/100 score"
+        },
+        {
+          "name": "Problem-Solving & Engineering Precision",
+          "category": "Core",
+          "proficiency": 96,
+          "highlight": "Analytical troubleshooting, high-availability failover logic"
+        },
+        {
+          "name": "Strong Communication & Teamwork",
+          "category": "Collaboration",
+          "proficiency": 95,
+          "highlight": "Cross-functional alignment, client presentation, clear documentation"
+        }
+      ]
+    }
+  ]
 }

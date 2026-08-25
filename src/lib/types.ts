@@ -31,6 +31,35 @@ export interface Education {
   institution: string;
   location: string;
   period: string;
+  details?: string;
+}
+
+export interface PhilosophyPillar {
+  id: string;
+  number: string;
+  title: string;
+  description: string;
+}
+
+export interface AboutStatCard {
+  id: string;
+  label: string;
+  value: string;
+  sublabel: string;
+}
+
+export interface AboutSectionMeta {
+  displayHeadline: string;
+  trueFocusSentence: string;
+  summary: string;
+}
+
+export interface SystemStatus {
+  isAvailable: boolean;
+  statusText: string;
+  location: string;
+  currentFocus: string;
+  activeClientSlots: string;
 }
 
 export interface Certification {
@@ -51,16 +80,64 @@ export interface Skill {
   level: number;
 }
 
-export interface Project {
+/** Single skill card in the technical matrix (cinematic site). */
+export interface SkillMatrixItem {
+  name: string;
+  category: string;
+  proficiency: number;
+  highlight?: string;
+}
+
+export interface SkillCategory {
   id: string;
   title: string;
-  company?: string;
+  shortTitle?: string;
+  subtitle: string;
+  iconName: string;
+  skills: SkillMatrixItem[];
+}
+
+export interface SkillsSectionMeta {
+  headline: string;
+  headlineAccent: string;
   description: string;
-  highlights?: string[];
-  tags: string[];
-  url: string;
+}
+
+export interface ProjectMetric {
+  label: string;
+  value: string;
+}
+
+export interface Project {
+  id: string;
+  /** SYSTEM // XX index shown on cards */
+  number: string;
+  title: string;
+  /** Category chip (e.g. Industrial Control & Real-Time Telemetry) */
+  category: string;
+  /** Short card blurb */
+  tagline: string;
+  /** Modal overview paragraph */
+  overview: string;
+  architecture: string[];
+  keyContributions: string[];
+  techStack: string[];
+  metrics: ProjectMetric[];
+  accentColor: string;
+  constellationClusterIndex: number;
+  company?: string;
+  liveUrl?: string;
+  githubUrl?: string;
   linkLabel?: string;
   featured: boolean;
+  /** @deprecated use tagline / overview */
+  description?: string;
+  /** @deprecated use keyContributions */
+  highlights?: string[];
+  /** @deprecated use techStack */
+  tags?: string[];
+  /** @deprecated use liveUrl */
+  url?: string;
 }
 
 export interface Experience {
@@ -68,7 +145,14 @@ export interface Experience {
   company: string;
   role: string;
   period: string;
-  description: string;
+  location: string;
+  type: string;
+  summary: string;
+  highlights: string[];
+  techStack: string[];
+  badge?: string;
+  /** @deprecated use summary */
+  description?: string;
 }
 
 export interface Theme {
@@ -84,12 +168,28 @@ export interface Seo {
   description: string;
 }
 
+export interface ContactMessage {
+  id: string;
+  name: string;
+  email: string;
+  message: string;
+  createdAt: string;
+  read: boolean;
+}
+
 export interface PortfolioData {
   profile: Profile;
   social: SocialLinks;
   about: About;
   showcase: ShowcaseStat[];
-  skills: Skill[];
+  /** @deprecated use skillCategories */
+  skills?: Skill[];
+  skillCategories: SkillCategory[];
+  skillsSection?: SkillsSectionMeta;
+  aboutSection?: AboutSectionMeta;
+  aboutStats?: AboutStatCard[];
+  philosophyPillars?: PhilosophyPillar[];
+  systemStatus?: SystemStatus;
   projects: Project[];
   experience: Experience[];
   education: Education[];

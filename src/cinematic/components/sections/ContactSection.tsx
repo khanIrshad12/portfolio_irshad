@@ -8,13 +8,15 @@ import {
   Send,
   GitBranch as Github,
   Phone,
-  Globe,
+  Download,
   Sparkles,
   ArrowUpRight,
   CheckCircle2,
   Briefcase,
 } from "lucide-react";
-import { SYSTEM_STATUS, PERSONAL_INFO } from "../../data/portfolioData";
+import { PERSONAL_INFO } from "../../data/portfolioData";
+import type { Profile, SocialLinks, SystemStatus } from "@/lib/types";
+import { CINEMATIC_SYSTEM_STATUS } from "@/lib/cinematic-content";
 import { SpotlightCard } from "../reactbits/SpotlightCard";
 import { MagneticButton } from "../reactbits/MagneticButton";
 import { DecryptedText } from "../reactbits/DecryptedText";
@@ -23,10 +25,16 @@ import { SectionEdgeBlur } from "../reactbits/SectionEdgeBlur";
 
 interface ContactSectionProps {
   onShockwave: () => void;
+  profile?: Pick<Profile, "email" | "phone" | "location" | "name" | "resumeUrl">;
+  social?: SocialLinks;
+  systemStatus?: SystemStatus;
 }
 
 export const ContactSection: React.FC<ContactSectionProps> = ({
   onShockwave,
+  profile,
+  social,
+  systemStatus = CINEMATIC_SYSTEM_STATUS,
 }) => {
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [copiedPhone, setCopiedPhone] = useState(false);
@@ -38,8 +46,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
   const [sentSuccess, setSentSuccess] = useState(false);
   const [sending, setSending] = useState(false);
 
-  const primaryEmail = PERSONAL_INFO.email;
-  const phoneNumber = PERSONAL_INFO.phone;
+  const primaryEmail = profile?.email ?? PERSONAL_INFO.email;
+  const phoneNumber = profile?.phone ?? PERSONAL_INFO.phone;
+  const location = profile?.location ?? PERSONAL_INFO.location;
+  const githubUrl = social?.github ?? PERSONAL_INFO.github;
+  const resumeUrl = profile?.resumeUrl?.trim() ?? "";
+  const hasResume = Boolean(resumeUrl);
 
   const handleCopyEmail = () => {
     navigator.clipboard.writeText(primaryEmail);
@@ -53,25 +65,38 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
     setTimeout(() => setCopiedPhone(false), 2500);
   };
 
-  const handleSendMessage = (e: React.FormEvent) => {
+  const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formState.email || !formState.message) return;
+    if (!formState.email || !formState.message || !formState.name) return;
 
     setSending(true);
-    // Open native mail client with portfolio hire inquiry
-    const subject = encodeURIComponent(
-      `Hire Inquiry — ${formState.name || "Portfolio Contact"}`,
-    );
-    const body = encodeURIComponent(
-      `Hi Irshad,\n\n${formState.message}\n\n— ${formState.name}\n${formState.email}`,
-    );
-    window.location.href = `mailto:${primaryEmail}?subject=${subject}&body=${body}`;
-
-    setTimeout(() => {
-      setSending(false);
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formState),
+      });
+      const json = (await res.json()) as { error?: string };
+      if (!res.ok) {
+        throw new Error(json.error ?? "Failed to send");
+      }
       setSentSuccess(true);
       onShockwave();
-    }, 600);
+    } catch (err) {
+      // Fallback: open mail client if API unavailable
+      const subject = encodeURIComponent(
+        `Hire Inquiry — ${formState.name || "Portfolio Contact"}`,
+      );
+      const body = encodeURIComponent(
+        `Hi Irshad,\n\n${formState.message}\n\n— ${formState.name}\n${formState.email}`,
+      );
+      window.location.href = `mailto:${primaryEmail}?subject=${subject}&body=${body}`;
+      setSentSuccess(true);
+      onShockwave();
+      void err;
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -206,7 +231,7 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                   {phoneNumber}
                 </div>
                 <div className="mt-0.5 font-mono text-xs text-white/50">
-                  {PERSONAL_INFO.location}
+                  {location}
                 </div>
               </div>
 
@@ -239,20 +264,20 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               <div className="min-w-0">
                 <div className="flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-widest text-emerald-400">
                   <span className="h-2 w-2 animate-ping rounded-full bg-emerald-400" />
-                  <span>Open to hire</span>
+                  <span>{systemStatus.isAvailable ? "Open to hire" : "Currently unavailable"}</span>
                 </div>
                 <div className="mt-0.5 text-base font-black uppercase tracking-tight text-white">
-                  {SYSTEM_STATUS.statusText}
+                  {systemStatus.statusText}
                 </div>
                 <p className="mt-1 font-mono text-xs text-white/60">
-                  {SYSTEM_STATUS.location} · {SYSTEM_STATUS.activeClientSlots}
+                  {systemStatus.location} · {systemStatus.activeClientSlots}
                 </p>
               </div>
             </SpotlightCard>
 
             <div className="grid grid-cols-2 gap-3 font-mono text-xs sm:gap-4">
               <a
-                href={PERSONAL_INFO.github}
+                href={githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center justify-between rounded-xl border border-white/10 bg-[#080808]/90 p-3.5 text-[10px] uppercase tracking-wider text-white/70 transition-all hover:border-cyan-400/50 hover:text-white sm:p-4 sm:text-[11px]"
@@ -265,14 +290,17 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
               </a>
 
               <a
-                href={PERSONAL_INFO.portfolioUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group flex items-center justify-between rounded-xl border border-white/10 bg-[#080808]/90 p-3.5 text-[10px] uppercase tracking-wider text-white/70 transition-all hover:border-cyan-500/50 hover:text-cyan-400 sm:p-4 sm:text-[11px]"
+                href={
+                  hasResume
+                    ? "/api/resume/download"
+                    : `mailto:${primaryEmail}?subject=${encodeURIComponent("Resume request")}`
+                }
+                {...(hasResume ? { download: true } : {})}
+                className="group flex items-center justify-between rounded-xl border border-cyan-500/25 bg-[#080808]/90 p-3.5 text-[10px] uppercase tracking-wider text-white/70 transition-all hover:border-cyan-400/50 hover:text-cyan-300 sm:p-4 sm:text-[11px]"
               >
                 <div className="flex items-center gap-2 sm:gap-2.5">
-                  <Globe className="h-4 w-4 text-cyan-400" />
-                  <span>Portfolio</span>
+                  <Download className="h-4 w-4 text-cyan-400" />
+                  <span>Download</span>
                 </div>
                 <ArrowUpRight className="h-3.5 w-3.5 text-white/40 transition-colors group-hover:text-cyan-400" />
               </a>
@@ -307,12 +335,12 @@ export const ContactSection: React.FC<ContactSectionProps> = ({
                     <CheckCircle2 className="h-7 w-7" />
                   </div>
                   <h3 className="text-xl font-black uppercase tracking-tight text-white sm:text-2xl">
-                    Message ready
+                    Message received
                   </h3>
                   <p className="mx-auto max-w-md font-mono text-xs text-white/70 sm:text-sm">
                     Thanks{formState.name ? `, ${formState.name}` : ""}. Your
-                    hire inquiry should open in your mail app — if it
-                    didn&apos;t, write directly to{" "}
+                    hire inquiry is in my inbox — I typically reply within
+                    24–48h. Prefer email? Write to{" "}
                     <span className="text-cyan-400">{primaryEmail}</span>.
                   </p>
                   <MagneticButton

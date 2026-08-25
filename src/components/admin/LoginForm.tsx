@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SpotlightCard } from "@/cinematic/components/reactbits/SpotlightCard";
+import {
+  AdminField,
+  AdminInput,
+  AdminLabel,
+  AdminButton,
+} from "@/components/admin/ui/admin-ui";
 
 export function LoginForm() {
   const [password, setPassword] = useState("");
@@ -36,50 +43,58 @@ export function LoginForm() {
   }
 
   return (
-    <div className="brutal-card w-full max-w-md p-8">
-      <h1 className="font-[family-name:var(--font-display)] text-2xl">
-        Admin Login
-      </h1>
-      <p className="mt-2 text-sm text-[var(--color-muted)]">
-        Customize your portfolio content and theme.
-      </p>
+    <div className="relative w-full max-w-md px-4">
+      <div className="pointer-events-none absolute -inset-8 rounded-full bg-cyan-500/10 blur-3xl" />
+      <SpotlightCard className="relative rounded-2xl border border-white/10 p-8 shadow-2xl shadow-black/80">
+        <span className="flex items-center gap-2 font-mono text-[10px] font-semibold uppercase tracking-[0.2em] text-cyan-400">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400" />
+          Portfolio Control
+        </span>
+        <h1 className="mt-3 font-display text-3xl font-black uppercase tracking-tight text-white">
+          Admin Login
+        </h1>
+        <p className="mt-2 text-sm leading-relaxed text-white/50">
+          Manage hero content, projects, skills, and contact submissions for
+          your cinematic portfolio.
+        </p>
 
-      <form onSubmit={handleSubmit} className="mt-8 space-y-4">
-        <div>
-          <label htmlFor="password" className="brutal-label">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="brutal-input"
-            required
-            autoComplete="current-password"
-          />
-        </div>
+        <form onSubmit={handleSubmit} className="mt-8 space-y-4">
+          <div>
+            <AdminLabel>Password</AdminLabel>
+            <AdminInput
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+            />
+          </div>
 
-        {error && (
-          <p className="text-sm font-semibold text-[var(--color-primary)]" role="alert">
-            {error}
-          </p>
-        )}
+          {error && (
+            <p className="text-sm font-semibold text-red-400" role="alert">
+              {error}
+            </p>
+          )}
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="brutal-btn brutal-btn-primary w-full disabled:opacity-60"
-        >
-          {loading ? "Signing in…" : "Sign In"}
-        </button>
-      </form>
-{/* 
-      <p className="mt-6 text-xs text-[var(--color-muted)]">
-        Default password: <code className="bg-[var(--color-surface)] px-1">changeme123</code>.
-        Set <code className="bg-[var(--color-surface)] px-1">ADMIN_PASSWORD</code> in{" "}
-        <code className="bg-[var(--color-surface)] px-1">.env.local</code>.
-      </p> */}
+          <AdminButton
+            type="submit"
+            variant="primary"
+            disabled={loading}
+            className="w-full"
+          >
+            {loading ? "Signing in…" : "Sign In"}
+          </AdminButton>
+        </form>
+
+        <p className="mt-6 font-mono text-[10px] leading-relaxed text-white/35">
+          Set <code className="text-cyan-400/80">ADMIN_PASSWORD</code> in{" "}
+          <code className="text-white/50">.env.local</code>. Quote passwords
+          that contain <code className="text-white/50">#</code> or{" "}
+          <code className="text-white/50">$</code>, then restart the dev
+          server.
+        </p>
+      </SpotlightCard>
     </div>
   );
 }

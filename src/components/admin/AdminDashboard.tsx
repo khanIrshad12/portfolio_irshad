@@ -1,40 +1,81 @@
 "use client";
 
 import { useState } from "react";
-import type { PortfolioData, Project, Experience, Skill } from "@/lib/types";
-
-type Tab =
-  | "profile"
-  | "about"
-  | "showcase"
-  | "projects"
-  | "skills"
-  | "experience"
-  | "education"
-  | "theme"
-  | "seo";
+import { Plus, Trash2, Save, Menu, X } from "lucide-react";
+import type {
+  PortfolioData,
+  ContactMessage,
+  Experience,
+  ShowcaseStat,
+  Education,
+  Certification,
+} from "@/lib/types";
+import { AdminMessages } from "@/components/admin/AdminMessages";
+import { AdminThemeSettings } from "@/components/admin/AdminThemeSettings";
+import { AdminSkillsPanel } from "@/components/admin/AdminSkillsPanel";
+import { AdminAboutPanel } from "@/components/admin/AdminAboutPanel";
+import { AdminProjectsPanel } from "@/components/admin/AdminProjectsPanel";
+import { normalizeTheme } from "@/lib/cinematic-theme";
+import { EMPTY_EXPERIENCE, normalizeExperiences } from "@/lib/experience";
+import { normalizeProjects } from "@/lib/projects";
+import { normalizePortfolioData } from "@/lib/skills";
+import { mergeCinematicContent } from "@/lib/cinematic-content";
+import {
+  AdminSidebar,
+  ADMIN_SECTIONS,
+  type AdminTab,
+} from "@/components/admin/AdminSidebar";
+import {
+  AdminField,
+  AdminLabel,
+  AdminTextarea,
+  AdminButton,
+  AdminPanel,
+  AdminSectionHeader,
+  AdminStatusBanner,
+  MoveControls,
+  ResumeUpload,
+} from "@/components/admin/ui/admin-ui";
 
 interface AdminDashboardProps {
   initialData: PortfolioData;
+  initialMessages: ContactMessage[];
+  initialUnread: number;
 }
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: "profile", label: "Profile" },
-  { id: "about", label: "About" },
-  { id: "showcase", label: "Showcase" },
-  { id: "projects", label: "Projects" },
-  { id: "skills", label: "Skills" },
-  { id: "experience", label: "Experience" },
-  { id: "education", label: "Education" },
-  { id: "theme", label: "Theme" },
-  { id: "seo", label: "SEO" },
-];
+function sectionMeta(tab: AdminTab) {
+  return ADMIN_SECTIONS.find((s) => s.id === tab)!;
+}
 
-export function AdminDashboard({ initialData }: AdminDashboardProps) {
-  const [data, setData] = useState<PortfolioData>(initialData);
-  const [tab, setTab] = useState<Tab>("profile");
+function moveItem<T>(list: T[], index: number, dir: -1 | 1): T[] {
+  const next = index + dir;
+  if (next < 0 || next >= list.length) return list;
+  const copy = [...list];
+  [copy[index], copy[next]] = [copy[next], copy[index]];
+  return copy;
+}
+
+export function AdminDashboard({
+  initialData,
+  initialMessages,
+  initialUnread,
+}: AdminDashboardProps) {
+  const [data, setData] = useState<PortfolioData>(() =>
+    mergeCinematicContent(
+      normalizePortfolioData({
+        ...initialData,
+        theme: normalizeTheme(initialData.theme),
+        experience: normalizeExperiences(initialData.experience ?? []),
+        projects: normalizeProjects(initialData.projects ?? []),
+      }),
+    ),
+  );
+  const [tab, setTab] = useState<AdminTab>("hero");
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState("");
+  const [messageOk, setMessageOk] = useState(false);
+  const meta = sectionMeta(tab);
 
   async function handleSave() {
     setSaving(true);
@@ -48,8 +89,10 @@ export function AdminDashboard({ initialData }: AdminDashboardProps) {
       });
 
       if (!res.ok) throw new Error("Save failed");
+      setMessageOk(true);
       setMessage("Saved! Refresh the site to see changes.");
     } catch {
+      setMessageOk(false);
       setMessage("Failed to save. Try again.");
     } finally {
       setSaving(false);
@@ -64,76 +107,51 @@ export function AdminDashboard({ initialData }: AdminDashboardProps) {
     setData((d) => ({ ...d, social: { ...d.social, [field]: value } }));
   }
 
-  function updateAbout(field: keyof PortfolioData["about"], value: string | string[]) {
+  function updateAbout(
+    field: keyof PortfolioData["about"],
+    value: string | string[],
+  ) {
     setData((d) => ({ ...d, about: { ...d.about, [field]: value } }));
-  }
-
-  function updateTheme(field: keyof PortfolioData["theme"], value: string) {
-    setData((d) => ({ ...d, theme: { ...d.theme, [field]: value } }));
   }
 
   function updateSeo(field: keyof PortfolioData["seo"], value: string) {
     setData((d) => ({ ...d, seo: { ...d.seo, [field]: value } }));
   }
 
-  function updateProject(index: number, field: keyof Project, value: string | boolean | string[]) {
+  function updateShowcase(
+    index: number,
+    field: keyof ShowcaseStat,
+    value: string,
+  ) {
     setData((d) => {
-      const projects = [...d.projects];
-      projects[index] = { ...projects[index], [field]: value };
-      return { ...d, projects };
+      const showcase = [...d.showcase];
+      showcase[index] = { ...showcase[index], [field]: value };
+      return { ...d, showcase };
     });
   }
 
-  function addProject() {
+  function addShowcase() {
     setData((d) => ({
       ...d,
-      projects: [
-        ...d.projects,
-        {
-          id: String(Date.now()),
-          title: "New Project",
-          company: "",
-          description: "",
-          highlights: [],
-          tags: [],
-          url: "",
-          linkLabel: "",
-          featured: false,
-        },
+      showcase: [
+        ...d.showcase,
+        { id: String(Date.now()), value: "0", label: "New stat" },
       ],
     }));
   }
 
-  function removeProject(index: number) {
+  function removeShowcase(index: number) {
     setData((d) => ({
       ...d,
-      projects: d.projects.filter((_, i) => i !== index),
+      showcase: d.showcase.filter((_, i) => i !== index),
     }));
   }
 
-  function updateSkill(index: number, field: keyof Skill, value: string | number) {
-    setData((d) => {
-      const skills = [...d.skills];
-      skills[index] = { ...skills[index], [field]: value };
-      return { ...d, skills };
-    });
-  }
-
-  function addSkill() {
-    setData((d) => ({
-      ...d,
-      skills: [...d.skills, { name: "New Skill", level: 50 }],
-    }));
-  }
-
-  function removeSkill(index: number) {
-    setData((d) => ({
-      ...d,
-      skills: d.skills.filter((_, i) => i !== index),
-    }));
-  }
-
-  function updateExperience(index: number, field: keyof Experience, value: string) {
+  function updateExperience(
+    index: number,
+    field: keyof Experience,
+    value: string | string[],
+  ) {
     setData((d) => {
       const experience = [...d.experience];
       experience[index] = { ...experience[index], [field]: value };
@@ -146,13 +164,7 @@ export function AdminDashboard({ initialData }: AdminDashboardProps) {
       ...d,
       experience: [
         ...d.experience,
-        {
-          id: String(Date.now()),
-          company: "",
-          role: "",
-          period: "",
-          description: "",
-        },
+        { id: String(Date.now()), ...EMPTY_EXPERIENCE },
       ],
     }));
   }
@@ -164,495 +176,771 @@ export function AdminDashboard({ initialData }: AdminDashboardProps) {
     }));
   }
 
+  function updateEducation(
+    index: number,
+    field: keyof Education,
+    value: string,
+  ) {
+    setData((d) => {
+      const education = [...d.education];
+      education[index] = { ...education[index], [field]: value };
+      return { ...d, education };
+    });
+  }
+
+  function addEducation() {
+    setData((d) => ({
+      ...d,
+      education: [
+        ...d.education,
+        {
+          id: String(Date.now()),
+          degree: "",
+          institution: "",
+          location: "",
+          period: "",
+        },
+      ],
+    }));
+  }
+
+  function removeEducation(index: number) {
+    setData((d) => ({
+      ...d,
+      education: d.education.filter((_, i) => i !== index),
+    }));
+  }
+
+  function updateCertification(
+    index: number,
+    field: keyof Certification,
+    value: string,
+  ) {
+    setData((d) => {
+      const certifications = [...d.certifications];
+      certifications[index] = { ...certifications[index], [field]: value };
+      return { ...d, certifications };
+    });
+  }
+
+  function addCertification() {
+    setData((d) => ({
+      ...d,
+      certifications: [
+        ...d.certifications,
+        { id: String(Date.now()), name: "", issuer: "", year: "" },
+      ],
+    }));
+  }
+
+  function removeCertification(index: number) {
+    setData((d) => ({
+      ...d,
+      certifications: d.certifications.filter((_, i) => i !== index),
+    }));
+  }
+
   return (
-    <div className="container-narrow px-5 py-8 md:px-8">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="font-[family-name:var(--font-display)] text-3xl">
-            Customize Portfolio
-          </h1>
-          <p className="mt-1 text-sm text-[var(--color-muted)]">
-            Edit content, projects, and neo-brutalist theme colors.
-          </p>
-        </div>
+    <div className="flex min-h-screen">
+      {/* Mobile sidebar overlay */}
+      {sidebarOpen && (
         <button
           type="button"
-          onClick={handleSave}
-          disabled={saving}
-          className="brutal-btn brutal-btn-primary disabled:opacity-60"
-        >
-          {saving ? "Saving…" : "Save Changes"}
-        </button>
-      </div>
-
-      {message && (
-        <p
-          className={`mb-6 border-[3px] border-[var(--color-ink)] px-4 py-3 text-sm font-semibold ${
-            message.includes("Failed")
-              ? "bg-[var(--color-primary)] text-[var(--color-bg)]"
-              : "bg-[var(--color-accent)]"
-          }`}
-          role="status"
-        >
-          {message}
-        </p>
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-label="Close menu"
+        />
       )}
 
-      <div className="mb-8 flex flex-wrap gap-2">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            type="button"
-            onClick={() => setTab(t.id)}
-            className={`brutal-btn px-4 py-2 text-xs ${
-              tab === t.id ? "brutal-btn-primary" : "brutal-btn-ghost"
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div
+        className={`fixed inset-y-0 left-0 z-50 w-[min(100%,18rem)] transform transition-transform duration-300 lg:static lg:translate-x-0 ${
+          sidebarOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <AdminSidebar
+          tab={tab}
+          unreadCount={initialUnread}
+          onTabChange={(next) => {
+            setTab(next);
+            setSidebarOpen(false);
+          }}
+        />
       </div>
 
-      <div className="brutal-card p-6 md:p-8">
-        {tab === "profile" && (
-          <div className="grid gap-4 sm:grid-cols-2">
-            <Field label="Name" value={data.profile.name} onChange={(v) => updateProfile("name", v)} />
-            <Field label="Title" value={data.profile.title} onChange={(v) => updateProfile("title", v)} />
-            <Field label="Tagline" value={data.profile.tagline} onChange={(v) => updateProfile("tagline", v)} className="sm:col-span-2" />
-            <Field label="Email" value={data.profile.email} onChange={(v) => updateProfile("email", v)} />
-            <Field label="Phone" value={data.profile.phone} onChange={(v) => updateProfile("phone", v)} />
-            <Field label="Location" value={data.profile.location} onChange={(v) => updateProfile("location", v)} />
-            <Field label="Current company" value={data.profile.currentCompany ?? ""} onChange={(v) => updateProfile("currentCompany", v)} />
-            <Field label="Current role" value={data.profile.currentRole ?? ""} onChange={(v) => updateProfile("currentRole", v)} />
-            <Field label="Total experience" value={data.profile.totalExperience ?? ""} onChange={(v) => updateProfile("totalExperience", v)} placeholder="2 years 6 months" />
-            <ResumeUpload
-              resumeUrl={data.profile.resumeUrl}
-              onUrlChange={(url) => updateProfile("resumeUrl", url)}
-            />
-            <Field label="GitHub" value={data.social.github} onChange={(v) => updateSocial("github", v)} />
-            <Field label="LinkedIn" value={data.social.linkedin} onChange={(v) => updateSocial("linkedin", v)} />
-            <Field label="Twitter" value={data.social.twitter} onChange={(v) => updateSocial("twitter", v)} />
-            <Field label="Website" value={data.social.website} onChange={(v) => updateSocial("website", v)} />
-          </div>
-        )}
-
-        {tab === "about" && (
-          <div className="space-y-4">
-            <Field label="Headline" value={data.about.headline} onChange={(v) => updateAbout("headline", v)} />
-            <div>
-              <label className="brutal-label">Bio</label>
-              <textarea
-                value={data.about.bio}
-                onChange={(e) => updateAbout("bio", e.target.value)}
-                rows={5}
-                className="brutal-input resize-y"
-              />
-            </div>
-            <div>
-              <label className="brutal-label">Highlights (one per line)</label>
-              <textarea
-                value={data.about.highlights.join("\n")}
-                onChange={(e) => updateAbout("highlights", e.target.value.split("\n").filter(Boolean))}
-                rows={4}
-                className="brutal-input resize-y"
-              />
-            </div>
-          </div>
-        )}
-
-        {tab === "showcase" && (
-          <div className="space-y-4">
-            {(data.showcase ?? []).map((stat, i) => (
-              <div key={stat.id} className="grid gap-3 border-b-2 border-[var(--color-ink)]/20 pb-4 sm:grid-cols-3">
-                <Field label="Value" value={stat.value} onChange={(v) => {
-                  const showcase = [...(data.showcase ?? [])];
-                  showcase[i] = { ...showcase[i], value: v };
-                  setData((d) => ({ ...d, showcase }));
-                }} />
-                <Field label="Label" value={stat.label} onChange={(v) => {
-                  const showcase = [...(data.showcase ?? [])];
-                  showcase[i] = { ...showcase[i], label: v };
-                  setData((d) => ({ ...d, showcase }));
-                }} />
-                <button type="button" onClick={() => setData((d) => ({ ...d, showcase: (d.showcase ?? []).filter((_, j) => j !== i) }))} className="self-end text-xs font-semibold text-[var(--color-primary)] pb-2">
-                  Remove
-                </button>
+      <div className="flex min-w-0 flex-1 flex-col">
+        <header className="sticky top-0 z-30 border-b border-white/10 bg-[#030303]/90 backdrop-blur-xl">
+          <div className="flex items-center justify-between gap-4 px-4 py-4 md:px-8">
+            <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setSidebarOpen((o) => !o)}
+                className="rounded-lg border border-white/10 p-2 text-white/70 lg:hidden"
+                aria-label="Toggle sections"
+              >
+                {sidebarOpen ? <X className="size-5" /> : <Menu className="size-5" />}
+              </button>
+              <div>
+                <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-cyan-400">
+                  {meta.eyebrow}
+                </p>
+                <h1 className="font-display text-xl font-black uppercase tracking-tight text-white md:text-2xl">
+                  {meta.label}
+                </h1>
               </div>
-            ))}
-            <button type="button" onClick={() => setData((d) => ({ ...d, showcase: [...(d.showcase ?? []), { id: String(Date.now()), value: "0", label: "New stat" }] }))} className="brutal-btn brutal-btn-accent text-xs">
-              + Add stat
-            </button>
+            </div>
+            <AdminButton
+              type="button"
+              variant="primary"
+              onClick={handleSave}
+              disabled={saving}
+            >
+              <Save className="size-3.5" />
+              {saving ? "Saving…" : "Save Changes"}
+            </AdminButton>
           </div>
-        )}
+        </header>
 
-        {tab === "projects" && (
-          <div className="space-y-6">
-            {data.projects.map((project, i) => (
-              <div key={project.id} className="border-[3px] border-[var(--color-ink)] p-4">
-                <div className="mb-4 flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase">Project {i + 1}</span>
-                  <button type="button" onClick={() => removeProject(i)} className="text-xs font-semibold text-[var(--color-primary)]">
-                    Remove
-                  </button>
-                </div>
+        <main className="admin-scrollbar flex-1 overflow-y-auto px-4 py-8 md:px-8">
+          {message && (
+            <div className="mb-6">
+              <AdminStatusBanner ok={messageOk}>{message}</AdminStatusBanner>
+            </div>
+          )}
+
+          <AdminPanel>
+            {tab !== "inbox" && (
+              <AdminSectionHeader
+                eyebrow={meta.eyebrow}
+                title={meta.label}
+                description={
+                  tab === "hero"
+                    ? "Hero identity, contact details, social links, and stat cards shown in the opening section."
+                    : tab === "about"
+                      ? "Architectural profile copy and highlight bullets for the About section."
+                      : tab === "skills"
+                        ? "Technical Matrix categories, skill cards, and section intro copy."
+                        : tab === "experience"
+                          ? "Company blocks shown in the About section carousel — add one per employer."
+                          : tab === "projects"
+                            ? "Cinematic project cards — system index, metrics, tech stack, and deep specs."
+                            : tab === "education"
+                              ? "Degrees and certifications."
+                              : "Theme colors and SEO metadata for the whole site."
+                }
+              />
+            )}
+
+            {tab === "hero" && (
+            <div className="space-y-10">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <AdminField
+                label="Name"
+                value={data.profile.name}
+                onChange={(v) => updateProfile("name", v)}
+              />
+              <AdminField
+                label="Title"
+                value={data.profile.title}
+                onChange={(v) => updateProfile("title", v)}
+              />
+              <AdminField
+                label="Tagline"
+                value={data.profile.tagline}
+                onChange={(v) => updateProfile("tagline", v)}
+                className="sm:col-span-2"
+              />
+              <AdminField
+                label="Email"
+                value={data.profile.email}
+                onChange={(v) => updateProfile("email", v)}
+              />
+              <AdminField
+                label="Phone"
+                value={data.profile.phone}
+                onChange={(v) => updateProfile("phone", v)}
+              />
+              <AdminField
+                label="Location"
+                value={data.profile.location}
+                onChange={(v) => updateProfile("location", v)}
+              />
+              <AdminField
+                label="Avatar URL"
+                value={data.profile.avatarUrl}
+                onChange={(v) => updateProfile("avatarUrl", v)}
+              />
+              <AdminField
+                label="Current company"
+                value={data.profile.currentCompany ?? ""}
+                onChange={(v) => updateProfile("currentCompany", v)}
+              />
+              <AdminField
+                label="Current role"
+                value={data.profile.currentRole ?? ""}
+                onChange={(v) => updateProfile("currentRole", v)}
+              />
+              <AdminField
+                label="Total experience"
+                value={data.profile.totalExperience ?? ""}
+                onChange={(v) => updateProfile("totalExperience", v)}
+                placeholder="2 years 6 months"
+              />
+              <ResumeUpload
+                resumeUrl={data.profile.resumeUrl}
+                onUrlChange={(url) => updateProfile("resumeUrl", url)}
+              />
+              <div className="sm:col-span-2 rounded-xl border border-white/10 bg-[#080808]/60 p-5">
+                <h3 className="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400">
+                  Availability (contact section)
+                </h3>
                 <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="Title" value={project.title} onChange={(v) => updateProject(i, "title", v)} />
-                  <Field label="Company" value={project.company ?? ""} onChange={(v) => updateProject(i, "company", v)} />
-                  <Field label="URL" value={project.url} onChange={(v) => updateProject(i, "url", v)} />
-                  <Field label="Link label" value={project.linkLabel ?? ""} onChange={(v) => updateProject(i, "linkLabel", v)} placeholder="Live Website" />
-                  <Field label="Tags (comma-separated)" value={project.tags.join(", ")} onChange={(v) => updateProject(i, "tags", v.split(",").map((t) => t.trim()).filter(Boolean))} className="sm:col-span-2" />
-                  <div className="sm:col-span-2">
-                    <label className="brutal-label">Description</label>
-                    <textarea value={project.description} onChange={(e) => updateProject(i, "description", e.target.value)} rows={3} className="brutal-input resize-y" />
-                  </div>
-                  <div className="sm:col-span-2">
-                    <label className="brutal-label">Highlights (one per line)</label>
-                    <textarea
-                      value={(project.highlights ?? []).join("\n")}
+                  <AdminField
+                    label="Status text"
+                    value={data.systemStatus?.statusText ?? ""}
+                    onChange={(v) =>
+                      setData((d) => ({
+                        ...d,
+                        systemStatus: {
+                          ...(d.systemStatus ?? {
+                            isAvailable: true,
+                            statusText: "",
+                            location: "",
+                            currentFocus: "",
+                            activeClientSlots: "",
+                          }),
+                          statusText: v,
+                        },
+                      }))
+                    }
+                    className="sm:col-span-2"
+                  />
+                  <AdminField
+                    label="Location line"
+                    value={data.systemStatus?.location ?? ""}
+                    onChange={(v) =>
+                      setData((d) => ({
+                        ...d,
+                        systemStatus: {
+                          ...(d.systemStatus ?? {
+                            isAvailable: true,
+                            statusText: "",
+                            location: "",
+                            currentFocus: "",
+                            activeClientSlots: "",
+                          }),
+                          location: v,
+                        },
+                      }))
+                    }
+                    className="sm:col-span-2"
+                  />
+                  <AdminField
+                    label="Active slots / tenure line"
+                    value={data.systemStatus?.activeClientSlots ?? ""}
+                    onChange={(v) =>
+                      setData((d) => ({
+                        ...d,
+                        systemStatus: {
+                          ...(d.systemStatus ?? {
+                            isAvailable: true,
+                            statusText: "",
+                            location: "",
+                            currentFocus: "",
+                            activeClientSlots: "",
+                          }),
+                          activeClientSlots: v,
+                        },
+                      }))
+                    }
+                    className="sm:col-span-2"
+                  />
+                  <AdminField
+                    label="Current focus"
+                    value={data.systemStatus?.currentFocus ?? ""}
+                    onChange={(v) =>
+                      setData((d) => ({
+                        ...d,
+                        systemStatus: {
+                          ...(d.systemStatus ?? {
+                            isAvailable: true,
+                            statusText: "",
+                            location: "",
+                            currentFocus: "",
+                            activeClientSlots: "",
+                          }),
+                          currentFocus: v,
+                        },
+                      }))
+                    }
+                    className="sm:col-span-2"
+                  />
+                  <label className="flex items-center gap-2 text-sm text-white/70 sm:col-span-2">
+                    <input
+                      type="checkbox"
+                      checked={data.systemStatus?.isAvailable ?? true}
                       onChange={(e) =>
-                        updateProject(
-                          i,
-                          "highlights",
-                          e.target.value.split("\n").filter(Boolean),
-                        )
+                        setData((d) => ({
+                          ...d,
+                          systemStatus: {
+                            ...(d.systemStatus ?? {
+                              isAvailable: true,
+                              statusText: "",
+                              location: "",
+                              currentFocus: "",
+                              activeClientSlots: "",
+                            }),
+                            isAvailable: e.target.checked,
+                          },
+                        }))
                       }
-                      rows={4}
-                      className="brutal-input resize-y"
+                      className="size-4 accent-cyan-400"
                     />
-                  </div>
-                  <label className="flex items-center gap-2 text-sm font-semibold">
-                    <input type="checkbox" checked={project.featured} onChange={(e) => updateProject(i, "featured", e.target.checked)} className="size-4 border-2 border-[var(--color-ink)]" />
-                    Featured project
+                    Available for hire
                   </label>
                 </div>
               </div>
-            ))}
-            <button type="button" onClick={addProject} className="brutal-btn brutal-btn-accent text-xs">
-              + Add Project
-            </button>
-          </div>
-        )}
+              <AdminField
+                label="GitHub"
+                value={data.social.github}
+                onChange={(v) => updateSocial("github", v)}
+              />
+              <AdminField
+                label="LinkedIn"
+                value={data.social.linkedin}
+                onChange={(v) => updateSocial("linkedin", v)}
+              />
+              <AdminField
+                label="Twitter"
+                value={data.social.twitter}
+                onChange={(v) => updateSocial("twitter", v)}
+              />
+              <AdminField
+                label="Website"
+                value={data.social.website}
+                onChange={(v) => updateSocial("website", v)}
+              />
+            </div>
 
-        {tab === "skills" && (
-          <div className="space-y-4">
-            {data.skills.map((skill, i) => (
-              <div key={skill.name + i} className="flex flex-wrap items-end gap-3 border-b-2 border-[var(--color-ink)]/20 pb-4">
-                <Field label="Skill" value={skill.name} onChange={(v) => updateSkill(i, "name", v)} className="flex-1 min-w-[140px]" />
-                <div className="w-32">
-                  <label className="brutal-label">Level ({skill.level}%)</label>
-                  <input type="range" min={0} max={100} value={skill.level} onChange={(e) => updateSkill(i, "level", Number(e.target.value))} className="w-full" />
-                </div>
-                <button type="button" onClick={() => removeSkill(i)} className="text-xs font-semibold text-[var(--color-primary)] pb-2">
-                  Remove
-                </button>
-              </div>
-            ))}
-            <button type="button" onClick={addSkill} className="brutal-btn brutal-btn-accent text-xs">
-              + Add Skill
-            </button>
-          </div>
-        )}
-
-        {tab === "experience" && (
-          <div className="space-y-6">
-            {data.experience.map((exp, i) => (
-              <div key={exp.id} className="border-[3px] border-[var(--color-ink)] p-4">
-                <div className="mb-4 flex justify-between">
-                  <span className="text-xs font-bold uppercase">Role {i + 1}</span>
-                  <button type="button" onClick={() => removeExperience(i)} className="text-xs font-semibold text-[var(--color-primary)]">
-                    Remove
-                  </button>
-                </div>
-                <div className="grid gap-3 sm:grid-cols-2">
-                  <Field label="Role" value={exp.role} onChange={(v) => updateExperience(i, "role", v)} />
-                  <Field label="Company" value={exp.company} onChange={(v) => updateExperience(i, "company", v)} />
-                  <Field label="Period" value={exp.period} onChange={(v) => updateExperience(i, "period", v)} />
-                  <div className="sm:col-span-2">
-                    <label className="brutal-label">Description</label>
-                    <textarea value={exp.description} onChange={(e) => updateExperience(i, "description", e.target.value)} rows={2} className="brutal-input resize-y" />
-                  </div>
-                </div>
-              </div>
-            ))}
-            <button type="button" onClick={addExperience} className="brutal-btn brutal-btn-accent text-xs">
-              + Add Experience
-            </button>
-          </div>
-        )}
-
-        {tab === "education" && (
-          <div className="space-y-8">
             <div>
-              <h3 className="mb-4 text-sm font-bold uppercase">Education</h3>
+              <h3 className="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400">
+                Hero stat cards
+              </h3>
               <div className="space-y-4">
-                {(data.education ?? []).map((edu, i) => (
-                  <div key={edu.id} className="border-[3px] border-[var(--color-ink)] p-4">
-                    <div className="mb-3 flex justify-between">
-                      <span className="text-xs font-bold uppercase">Entry {i + 1}</span>
-                      <button type="button" onClick={() => setData((d) => ({ ...d, education: (d.education ?? []).filter((_, j) => j !== i) }))} className="text-xs font-semibold text-[var(--color-primary)]">Remove</button>
-                    </div>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <Field label="Degree" value={edu.degree} onChange={(v) => { const education = [...(data.education ?? [])]; education[i] = { ...education[i], degree: v }; setData((d) => ({ ...d, education })); }} className="sm:col-span-2" />
-                      <Field label="Institution" value={edu.institution} onChange={(v) => { const education = [...(data.education ?? [])]; education[i] = { ...education[i], institution: v }; setData((d) => ({ ...d, education })); }} />
-                      <Field label="Period" value={edu.period} onChange={(v) => { const education = [...(data.education ?? [])]; education[i] = { ...education[i], period: v }; setData((d) => ({ ...d, education })); }} />
-                      <Field label="Location" value={edu.location} onChange={(v) => { const education = [...(data.education ?? [])]; education[i] = { ...education[i], location: v }; setData((d) => ({ ...d, education })); }} className="sm:col-span-2" />
+                {data.showcase.map((stat, i) => (
+                  <div
+                    key={stat.id}
+                    className="grid gap-3 rounded-xl border border-white/10 bg-[#080808]/60 p-4 sm:grid-cols-[1fr_1fr_auto]"
+                  >
+                    <AdminField
+                      label="Value"
+                      value={stat.value}
+                      onChange={(v) => updateShowcase(i, "value", v)}
+                    />
+                    <AdminField
+                      label="Label"
+                      value={stat.label}
+                      onChange={(v) => updateShowcase(i, "label", v)}
+                    />
+                    <div className="flex items-end gap-2 pb-1">
+                      <MoveControls
+                        index={i}
+                        total={data.showcase.length}
+                        onMove={(dir) =>
+                          setData((d) => ({
+                            ...d,
+                            showcase: moveItem(d.showcase, i, dir),
+                          }))
+                        }
+                      />
+                      <AdminButton
+                        type="button"
+                        variant="danger"
+                        onClick={() => removeShowcase(i)}
+                        className="!px-2.5 !py-2"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </AdminButton>
                     </div>
                   </div>
                 ))}
-                <button type="button" onClick={() => setData((d) => ({ ...d, education: [...(d.education ?? []), { id: String(Date.now()), degree: "", institution: "", location: "", period: "" }] }))} className="brutal-btn brutal-btn-accent text-xs">+ Add Education</button>
+                <AdminButton type="button" variant="accent" onClick={addShowcase}>
+                  <Plus className="size-3.5" /> Add stat
+                </AdminButton>
               </div>
             </div>
-            <div>
-              <h3 className="mb-4 text-sm font-bold uppercase">Certifications</h3>
-              <div className="space-y-4">
-                {(data.certifications ?? []).map((cert, i) => (
-                  <div key={cert.id} className="border-[3px] border-[var(--color-ink)] p-4">
-                    <div className="mb-3 flex justify-between">
-                      <span className="text-xs font-bold uppercase">Cert {i + 1}</span>
-                      <button type="button" onClick={() => setData((d) => ({ ...d, certifications: (d.certifications ?? []).filter((_, j) => j !== i) }))} className="text-xs font-semibold text-[var(--color-primary)]">Remove</button>
-                    </div>
-                    <div className="grid gap-3 sm:grid-cols-2">
-                      <Field label="Name" value={cert.name} onChange={(v) => { const certifications = [...(data.certifications ?? [])]; certifications[i] = { ...certifications[i], name: v }; setData((d) => ({ ...d, certifications })); }} className="sm:col-span-2" />
-                      <Field label="Issuer" value={cert.issuer} onChange={(v) => { const certifications = [...(data.certifications ?? [])]; certifications[i] = { ...certifications[i], issuer: v }; setData((d) => ({ ...d, certifications })); }} />
-                      <Field label="Year" value={cert.year} onChange={(v) => { const certifications = [...(data.certifications ?? [])]; certifications[i] = { ...certifications[i], year: v }; setData((d) => ({ ...d, certifications })); }} />
+            </div>
+          )}
+
+          {tab === "about" && (
+            <div className="space-y-8">
+              <AdminAboutPanel
+                aboutSection={
+                  data.aboutSection ?? {
+                    displayHeadline: "",
+                    trueFocusSentence: "",
+                    summary: "",
+                  }
+                }
+                aboutStats={data.aboutStats ?? []}
+                philosophyPillars={data.philosophyPillars ?? []}
+                onAboutSectionChange={(aboutSection) =>
+                  setData((d) => ({ ...d, aboutSection }))
+                }
+                onAboutStatsChange={(aboutStats) =>
+                  setData((d) => ({ ...d, aboutStats }))
+                }
+                onPillarsChange={(philosophyPillars) =>
+                  setData((d) => ({ ...d, philosophyPillars }))
+                }
+              />
+              <div className="rounded-xl border border-white/10 bg-[#080808]/60 p-5">
+                <h3 className="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-white/45">
+                  Legacy about fields (SEO / metadata)
+                </h3>
+                <div className="space-y-4">
+              <AdminField
+                label="Headline"
+                value={data.about.headline}
+                onChange={(v) => updateAbout("headline", v)}
+              />
+              <div>
+                <AdminLabel>Bio</AdminLabel>
+                <AdminTextarea
+                  value={data.about.bio}
+                  onChange={(e) => updateAbout("bio", e.target.value)}
+                  rows={5}
+                />
+              </div>
+              <div>
+                <AdminLabel>Highlights (one per line)</AdminLabel>
+                <AdminTextarea
+                  value={(data.about.highlights ?? []).join("\n")}
+                  onChange={(e) =>
+                    updateAbout(
+                      "highlights",
+                      e.target.value.split("\n").filter(Boolean),
+                    )
+                  }
+                  rows={4}
+                />
+              </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tab === "projects" && (
+            <AdminProjectsPanel
+              projects={data.projects}
+              onChange={(projects) => setData((d) => ({ ...d, projects }))}
+            />
+          )}
+
+          {tab === "skills" && (
+            <AdminSkillsPanel
+              section={
+                data.skillsSection ?? {
+                  headline: "A Robust Stack",
+                  headlineAccent: "Built for Velocity & Resilience.",
+                  description:
+                    "From GPU shader math to PLC register polling, low-latency WebSockets, and modern Next.js 15 architectures.",
+                }
+              }
+              categories={data.skillCategories ?? []}
+              onSectionChange={(skillsSection) =>
+                setData((d) => ({ ...d, skillsSection }))
+              }
+              onCategoriesChange={(skillCategories) =>
+                setData((d) => ({ ...d, skillCategories }))
+              }
+            />
+          )}
+
+          {tab === "experience" && (
+            <div className="space-y-6">
+              <p className="text-sm text-white/50">
+                Each entry is one company block on the About section carousel.
+                Add a new company when you switch jobs — reorder with the arrows.
+              </p>
+              {data.experience.map((exp, i) => (
+                <div
+                  key={exp.id}
+                  className="rounded-xl border border-white/10 bg-[#080808]/80 p-5"
+                >
+                  <div className="mb-4 flex items-center justify-between">
+                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400">
+                      Company {String(i + 1).padStart(2, "0")}
+                      {exp.company ? ` · ${exp.company}` : ""}
+                    </span>
+                    <div className="flex items-center gap-2">
+                      <MoveControls
+                        index={i}
+                        total={data.experience.length}
+                        onMove={(dir) =>
+                          setData((d) => ({
+                            ...d,
+                            experience: moveItem(d.experience, i, dir),
+                          }))
+                        }
+                      />
+                      <AdminButton
+                        type="button"
+                        variant="danger"
+                        onClick={() => removeExperience(i)}
+                        className="!px-2.5 !py-2"
+                      >
+                        <Trash2 className="size-3.5" />
+                      </AdminButton>
                     </div>
                   </div>
-                ))}
-                <button type="button" onClick={() => setData((d) => ({ ...d, certifications: [...(d.certifications ?? []), { id: String(Date.now()), name: "", issuer: "", year: "" }] }))} className="brutal-btn brutal-btn-accent text-xs">+ Add Certification</button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {tab === "theme" && (
-          <div className="space-y-6">
-            <p className="text-sm text-[var(--color-muted)]">
-              Use OKLCH color values. Changes apply site-wide after save + refresh.
-            </p>
-            <div className="grid gap-4 sm:grid-cols-2">
-              {(
-                [
-                  ["primary", "Primary (crimson CTAs)"],
-                  ["accent", "Accent (yellow highlights)"],
-                  ["background", "Background"],
-                  ["surface", "Surface (cards)"],
-                  ["ink", "Ink (text & borders)"],
-                ] as const
-              ).map(([key, label]) => (
-                <div key={key}>
-                  <label className="brutal-label">{label}</label>
-                  <div className="flex gap-2">
-                    <input
-                      value={data.theme[key]}
-                      onChange={(e) => updateTheme(key, e.target.value)}
-                      className="brutal-input flex-1 font-mono text-xs"
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <AdminField
+                      label="Company"
+                      value={exp.company}
+                      onChange={(v) => updateExperience(i, "company", v)}
                     />
-                    <span
-                      className="brutal-border size-11 shrink-0"
-                      style={{ background: data.theme[key] }}
-                      aria-hidden
+                    <AdminField
+                      label="Role"
+                      value={exp.role}
+                      onChange={(v) => updateExperience(i, "role", v)}
                     />
+                    <AdminField
+                      label="Period"
+                      value={exp.period}
+                      onChange={(v) => updateExperience(i, "period", v)}
+                      placeholder="2022 — Present (2 Years 9 Months)"
+                    />
+                    <AdminField
+                      label="Location"
+                      value={exp.location}
+                      onChange={(v) => updateExperience(i, "location", v)}
+                    />
+                    <AdminField
+                      label="Employment type"
+                      value={exp.type}
+                      onChange={(v) => updateExperience(i, "type", v)}
+                      placeholder="Full-Time"
+                    />
+                    <AdminField
+                      label="Badge (optional)"
+                      value={exp.badge ?? ""}
+                      onChange={(v) => updateExperience(i, "badge", v)}
+                      placeholder="2y 9m Experience"
+                    />
+                    <div className="sm:col-span-2">
+                      <AdminLabel>Summary</AdminLabel>
+                      <AdminTextarea
+                        value={exp.summary}
+                        onChange={(e) =>
+                          updateExperience(i, "summary", e.target.value)
+                        }
+                        rows={2}
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <AdminLabel>Highlights (one per line)</AdminLabel>
+                      <AdminTextarea
+                        value={(exp.highlights ?? []).join("\n")}
+                        onChange={(e) =>
+                          updateExperience(
+                            i,
+                            "highlights",
+                            e.target.value.split("\n").filter(Boolean),
+                          )
+                        }
+                        rows={6}
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <AdminLabel>Tech stack (comma-separated)</AdminLabel>
+                      <AdminTextarea
+                        value={(exp.techStack ?? []).join(", ")}
+                        onChange={(e) =>
+                          updateExperience(
+                            i,
+                            "techStack",
+                            e.target.value
+                              .split(",")
+                              .map((t) => t.trim())
+                              .filter(Boolean),
+                          )
+                        }
+                        rows={2}
+                        placeholder="React.js, Next.js, TypeScript"
+                      />
+                    </div>
                   </div>
                 </div>
               ))}
+              <AdminButton type="button" variant="accent" onClick={addExperience}>
+                <Plus className="size-3.5" /> Add Company
+              </AdminButton>
             </div>
-            <div className="brutal-border p-4" style={{ background: data.theme.background }}>
-              <p style={{ color: data.theme.ink }} className="font-semibold">
-                Preview text on background
-              </p>
-              <button
-                type="button"
-                className="mt-3 px-4 py-2 text-sm font-bold uppercase"
-                style={{
-                  background: data.theme.primary,
-                  color: data.theme.background,
-                  border: `3px solid ${data.theme.ink}`,
-                  boxShadow: `4px 4px 0 ${data.theme.ink}`,
-                }}
-              >
-                Primary Button
-              </button>
-            </div>
-          </div>
-        )}
+          )}
 
-        {tab === "seo" && (
-          <div className="space-y-4">
-            <Field label="Page Title" value={data.seo.title} onChange={(v) => updateSeo("title", v)} />
-            <div>
-              <label className="brutal-label">Meta Description</label>
-              <textarea value={data.seo.description} onChange={(e) => updateSeo("description", e.target.value)} rows={3} className="brutal-input resize-y" />
+          {tab === "education" && (
+            <div className="space-y-8">
+              <div>
+                <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-cyan-300/80">
+                  Education
+                </h3>
+                <div className="space-y-4">
+                  {data.education.map((edu, i) => (
+                    <div
+                      key={edu.id}
+                      className="rounded-lg border border-white/10 bg-[#0a0a0a] p-4"
+                    >
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase text-white/50">
+                          Entry {i + 1}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => removeEducation(i)}
+                          className="rounded border border-white/15 p-1.5 text-red-300 transition hover:border-red-400/50"
+                          aria-label="Remove education"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </button>
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <AdminField
+                          label="Degree"
+                          value={edu.degree}
+                          onChange={(v) => updateEducation(i, "degree", v)}
+                          className="sm:col-span-2"
+                        />
+                        <AdminField
+                          label="Institution"
+                          value={edu.institution}
+                          onChange={(v) =>
+                            updateEducation(i, "institution", v)
+                          }
+                        />
+                        <AdminField
+                          label="Period"
+                          value={edu.period}
+                          onChange={(v) => updateEducation(i, "period", v)}
+                        />
+                        <AdminField
+                          label="Location"
+                          value={edu.location}
+                          onChange={(v) => updateEducation(i, "location", v)}
+                          className="sm:col-span-2"
+                        />
+                        <div className="sm:col-span-2">
+                          <AdminLabel>Details</AdminLabel>
+                          <AdminTextarea
+                            value={edu.details ?? ""}
+                            onChange={(e) =>
+                              setData((d) => {
+                                const education = [...d.education];
+                                education[i] = {
+                                  ...education[i],
+                                  details: e.target.value,
+                                };
+                                return { ...d, education };
+                              })
+                            }
+                            rows={3}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  <AdminButton type="button" variant="accent" onClick={addEducation}>
+                    <Plus className="size-3.5" /> Add Education
+                  </AdminButton>
+                </div>
+              </div>
+
+              <div>
+                <h3 className="mb-4 text-sm font-bold uppercase tracking-wider text-cyan-300/80">
+                  Certifications
+                </h3>
+                <div className="space-y-4">
+                  {data.certifications.map((cert, i) => (
+                    <div
+                      key={cert.id}
+                      className="rounded-lg border border-white/10 bg-[#0a0a0a] p-4"
+                    >
+                      <div className="mb-3 flex items-center justify-between">
+                        <span className="text-xs font-bold uppercase text-white/50">
+                          Cert {i + 1}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => removeCertification(i)}
+                          className="rounded border border-white/15 p-1.5 text-red-300 transition hover:border-red-400/50"
+                          aria-label="Remove certification"
+                        >
+                          <Trash2 className="size-3.5" />
+                        </button>
+                      </div>
+                      <div className="grid gap-3 sm:grid-cols-2">
+                        <AdminField
+                          label="Name"
+                          value={cert.name}
+                          onChange={(v) => updateCertification(i, "name", v)}
+                          className="sm:col-span-2"
+                        />
+                        <AdminField
+                          label="Issuer"
+                          value={cert.issuer}
+                          onChange={(v) => updateCertification(i, "issuer", v)}
+                        />
+                        <AdminField
+                          label="Year"
+                          value={cert.year}
+                          onChange={(v) => updateCertification(i, "year", v)}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <AdminButton type="button" variant="accent" onClick={addCertification}>
+                    <Plus className="size-3.5" /> Add Certification
+                  </AdminButton>
+                </div>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+
+          {tab === "settings" && (
+            <div className="space-y-10">
+              <AdminThemeSettings
+                theme={data.theme}
+                onChange={(theme) => setData((d) => ({ ...d, theme }))}
+              />
+
+              <div>
+                <h3 className="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400">
+                  SEO metadata
+                </h3>
+                <div className="space-y-4">
+                  <AdminField
+                    label="Page Title"
+                    value={data.seo.title}
+                    onChange={(v) => updateSeo("title", v)}
+                  />
+                  <div>
+                    <AdminLabel>Meta Description</AdminLabel>
+                    <AdminTextarea
+                      value={data.seo.description}
+                      onChange={(e) => updateSeo("description", e.target.value)}
+                      rows={3}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {tab === "inbox" && (
+            <AdminMessages initialMessages={initialMessages} />
+          )}
+          </AdminPanel>
+        </main>
       </div>
     </div>
   );
 }
-
-function Field({
-  label,
-  value,
-  onChange,
-  className = "",
-  placeholder,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  className?: string;
-  placeholder?: string;
-}) {
-  return (
-    <div className={className}>
-      <label className="brutal-label">{label}</label>
-      <input
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="brutal-input"
-      />
-    </div>
-  );
-}
-
-function ResumeUpload({
-  resumeUrl,
-  onUrlChange,
-}: {
-  resumeUrl: string;
-  onUrlChange: (url: string) => void;
-}) {
-  const [uploading, setUploading] = useState(false);
-  const [status, setStatus] = useState("");
-  const [fileName, setFileName] = useState("");
-
-  async function handleUpload(file: File | undefined) {
-    if (!file) return;
-    setUploading(true);
-    setStatus("");
-    setFileName(file.name);
-
-    try {
-      const body = new FormData();
-      body.append("resume", file);
-
-      const res = await fetch("/api/admin/resume", {
-        method: "POST",
-        body,
-      });
-      const json = (await res.json()) as { url?: string; error?: string };
-
-      if (!res.ok) {
-        throw new Error(json.error ?? "Upload failed");
-      }
-
-      onUrlChange(json.url ?? "");
-      setStatus("Uploaded — previous resume removed.");
-    } catch (err) {
-      setStatus(err instanceof Error ? err.message : "Upload failed");
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  async function handleDelete() {
-    if (!resumeUrl) return;
-    if (!confirm("Remove the current resume?")) return;
-
-    setUploading(true);
-    setStatus("");
-    try {
-      const res = await fetch("/api/admin/resume", { method: "DELETE" });
-      if (!res.ok) throw new Error("Delete failed");
-      onUrlChange("");
-      setFileName("");
-      setStatus("Resume removed.");
-    } catch {
-      setStatus("Failed to delete resume.");
-    } finally {
-      setUploading(false);
-    }
-  }
-
-  return (
-    <div className="sm:col-span-2 space-y-3 border-[3px] border-[var(--color-ink)] bg-[var(--color-surface)] p-4">
-      <p className="brutal-label mb-0">Resume</p>
-      <p className="text-xs text-[var(--color-muted)]">
-        Upload a PDF / DOC / DOCX (max 5 MB). Uploading a new file deletes the previous one.
-      </p>
-
-      {resumeUrl ? (
-        <div className="flex flex-wrap items-center gap-3 text-sm">
-          <a
-            href={resumeUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-semibold underline"
-          >
-            View current resume
-          </a>
-          <span className="truncate text-xs text-[var(--color-muted)] max-w-[240px]">
-            {resumeUrl}
-          </span>
-        </div>
-      ) : (
-        <p className="text-sm text-[var(--color-muted)]">No resume on file.</p>
-      )}
-
-      <div className="flex flex-wrap items-center gap-3">
-        <label className="brutal-btn brutal-btn-accent text-xs cursor-pointer">
-          {uploading ? "Uploading…" : "Upload resume"}
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            className="sr-only"
-            disabled={uploading}
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              void handleUpload(file);
-              e.target.value = "";
-            }}
-          />
-        </label>
-        {resumeUrl && (
-          <button
-            type="button"
-            onClick={() => void handleDelete()}
-            disabled={uploading}
-            className="brutal-btn brutal-btn-ghost text-xs disabled:opacity-60"
-          >
-            Remove
-          </button>
-        )}
-        {fileName && !status.includes("removed") && (
-          <span className="text-xs text-[var(--color-muted)]">{fileName}</span>
-        )}
-      </div>
-
-      <Field
-        label="Or paste external URL"
-        value={resumeUrl}
-        onChange={onUrlChange}
-        placeholder="/uploads/resume.pdf or https://…"
-      />
-
-      {status && (
-        <p
-          className={`text-xs font-semibold ${
-            status.toLowerCase().includes("fail") ||
-            status.toLowerCase().includes("only") ||
-            status.toLowerCase().includes("large") ||
-            status.toLowerCase().includes("invalid")
-              ? "text-[var(--color-primary)]"
-              : "text-[var(--color-ink)]"
-          }`}
-          role="status"
-        >
-          {status}
-        </p>
-      )}
-    </div>
-  );
-}
-

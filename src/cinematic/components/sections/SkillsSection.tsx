@@ -19,12 +19,39 @@ import {
 import "swiper/css";
 import "swiper/css/pagination";
 
-import { SKILL_CATEGORIES } from "../../data/portfolioData";
-import type { SkillItem } from "../../types";
+import type { SkillCategory as MatrixCategory } from "@/lib/types";
+import type { SkillCategory, SkillItem } from "../../types";
 import { GridBackground } from "../reactbits/GridBackground";
 import { SpotlightCard } from "../reactbits/SpotlightCard";
 import { SectionEdgeBlur } from "../reactbits/SectionEdgeBlur";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
+
+function toSkillItem(skill: MatrixCategory["skills"][number]): SkillItem {
+  return {
+    name: skill.name,
+    category: skill.category,
+    proficiency: skill.proficiency,
+    highlight: skill.highlight,
+  };
+}
+
+function toSkillCategory(cat: MatrixCategory): SkillCategory {
+  return {
+    id: cat.id,
+    title: cat.title,
+    shortTitle: cat.shortTitle,
+    subtitle: cat.subtitle,
+    iconName: cat.iconName,
+    skills: cat.skills.map(toSkillItem),
+  };
+}
+
+interface SkillsSectionProps {
+  categories: MatrixCategory[];
+  headline?: string;
+  headlineAccent?: string;
+  description?: string;
+}
 
 function SkillCard({ skill }: { skill: SkillItem }) {
   return (
@@ -151,9 +178,15 @@ function SkillsCardsCarousel({
   );
 }
 
-export const SkillsSection: React.FC = () => {
+export const SkillsSection: React.FC<SkillsSectionProps> = ({
+  categories,
+  headline = "A Robust Stack",
+  headlineAccent = "Built for Velocity & Resilience.",
+  description = "From GPU shader math to PLC register polling, low-latency WebSockets, and modern Next.js 15 architectures.",
+}) => {
+  const skillCategories = categories.map(toSkillCategory);
   const [selectedCategory, setSelectedCategory] = useState<string>(
-    SKILL_CATEGORIES[0].id,
+    skillCategories[0]?.id ?? "",
   );
 
   const getCategoryIcon = (iconName: string) => {
@@ -200,10 +233,8 @@ export const SkillsSection: React.FC = () => {
           </motion.div>
 
           <h2 className="max-w-4xl text-[clamp(1.75rem,8vw,3.75rem)] font-black uppercase leading-[1.02] tracking-tighter text-white sm:text-6xl sm:leading-[0.95] md:text-7xl">
-            A Robust Stack <br />
-            <span className="text-white/50">
-              Built for Velocity &amp; Resilience.
-            </span>
+            {headline} <br />
+            <span className="text-white/50">{headlineAccent}</span>
           </h2>
 
           <motion.p
@@ -213,15 +244,14 @@ export const SkillsSection: React.FC = () => {
             transition={{ delay: 0.2 }}
             className="mt-5 max-w-2xl text-sm font-normal leading-relaxed text-white/70 sm:mt-6 sm:text-lg"
           >
-            From GPU shader math to PLC register polling, low-latency WebSockets,
-            and modern Next.js 15 architectures.
+            {description}
           </motion.p>
         </div>
 
         {/* Mobile category chips */}
         <div className="skills-cat-scroll mb-8 -mx-4 overflow-x-auto px-4 sm:mx-0 sm:px-0 md:hidden">
           <div className="flex w-max gap-2 rounded-xl border border-white/10 bg-black/60 p-1.5 backdrop-blur-xl">
-            {SKILL_CATEGORIES.map((cat, idx) => {
+            {skillCategories.map((cat, idx) => {
               const isActive = selectedCategory === cat.id;
               return (
                 <button
@@ -262,7 +292,7 @@ export const SkillsSection: React.FC = () => {
 
         {/* Desktop category tabs */}
         <div className="mb-12 hidden w-fit flex-wrap gap-2.5 rounded-xl border border-white/10 bg-black/60 p-1.5 backdrop-blur-xl md:flex">
-          {SKILL_CATEGORIES.map((cat, idx) => {
+          {skillCategories.map((cat, idx) => {
             const isActive = selectedCategory === cat.id;
             return (
               <button
@@ -295,7 +325,7 @@ export const SkillsSection: React.FC = () => {
         </div>
 
         <AnimatePresence mode="wait">
-          {SKILL_CATEGORIES.filter((c) => c.id === selectedCategory).map(
+          {skillCategories.filter((c) => c.id === selectedCategory).map(
             (cat) => (
               <motion.div
                 key={cat.id}

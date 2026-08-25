@@ -260,11 +260,22 @@ export class ParticleEngine {
   }
 
   /**
-   * Manually force a specific particle state if user clicks state badge
+   * Manually force a specific particle state if user clicks state badge.
+   * Snaps progress so the chosen state is the ACTIVE index (not stuck on previous).
    */
   public forceState(stateId: ParticleStateId) {
-    const totalStates = PARTICLE_STATES.length;
-    this.targetScrollProgress = stateId / (totalStates - 1);
+    const n = PARTICLE_STATES.length;
+    const last = n - 1;
+    const id = Math.max(0, Math.min(last, stateId)) as ParticleStateId;
+    // Equal segments: each morph owns 1/n of the scroll range
+    this.targetScrollProgress = id >= last ? 1 : (id + 0.5) / n;
+    this.currentScrollProgress = this.targetScrollProgress;
+    this.currentActiveState = id;
+    this.currentNextState = Math.min(id + 1, last) as ParticleStateId;
+    this.currentMorphProgress = 0;
+    if (this.onStateChange) {
+      this.onStateChange(id);
+    }
   }
 
   private startLoop() {
@@ -285,26 +296,31 @@ export class ParticleEngine {
       this.currentMouse.x += (this.targetMouse.x - this.currentMouse.x) * 0.05;
       this.currentMouse.y += (this.targetMouse.y - this.currentMouse.y) * 0.05;
 
-      // Decay click pulse
+      // Decay click pulse — very slow so rings stay on screen ~4–5s
       if (this.clickPulse > 0.001) {
-        this.clickPulse *= 0.93;
+        this.clickPulse *= 0.991;
       } else {
         this.clickPulse = 0;
       }
 
-      // Decay network pulse
+      // Decay network pulse (brightness) — long glow
       if (this.networkPulse > 0.001) {
-        this.networkPulse *= 0.94;
+        this.networkPulse *= 0.992;
       } else {
         this.networkPulse = 0;
       }
 
-      // Calculate state indices and morph progress
-      const numIntervals = PARTICLE_STATES.length - 1; // 5 transitions (0->1, 1->2, 2->3, 3->4, 4->5)
-      const scaledProgress = this.currentScrollProgress * numIntervals;
-      const activeIdx = Math.min(Math.floor(scaledProgress), numIntervals - 1) as ParticleStateId;
-      const nextIdx = Math.min(activeIdx + 1, PARTICLE_STATES.length - 1) as ParticleStateId;
-      const morphT = scaledProgress - activeIdx;
+      // Equal segments across all morph states (fixes 05 never becoming ACTIVE)
+      const n = PARTICLE_STATES.length;
+      const lastState = (n - 1) as ParticleStateId;
+      const scaledProgress = this.currentScrollProgress * n;
+      const activeIdx = Math.min(
+        Math.floor(Math.min(scaledProgress, n - 0.0001)),
+        lastState,
+      ) as ParticleStateId;
+      const nextIdx = Math.min(activeIdx + 1, lastState) as ParticleStateId;
+      const morphT =
+        activeIdx >= lastState ? 0 : scaledProgress - activeIdx;
 
       if (activeIdx !== this.currentActiveState) {
         this.currentActiveState = activeIdx;

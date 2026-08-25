@@ -56,15 +56,22 @@ export function useSmoothScrollTo() {
     if (!el) return;
 
     if (lenis && !reduced) {
+      // HUD may have paused Lenis for inner scrolling — always resume first
+      lenis.start();
+      document.documentElement.classList.remove("lenis-stopped");
       lenis.scrollTo(el, {
         offset: -72,
         duration: 1.15,
         easing: easeOutExpo,
+        immediate: false,
       });
       return;
     }
 
-    el.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "start" });
+    el.scrollIntoView({
+      behavior: reduced ? "auto" : "smooth",
+      block: "start",
+    });
   };
 }
 

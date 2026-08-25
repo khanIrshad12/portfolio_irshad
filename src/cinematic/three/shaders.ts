@@ -77,13 +77,13 @@ void main() {
     pos.z += push * 0.5;
   }
 
-  // Interactive click/tap shockwave pulse
-  if (uClickPulse > 0.01) {
+  // Interactive click/tap shockwave — wide, slow-expanding ring
+  if (uClickPulse > 0.008) {
     float distToClick = length(pos - uClickOrigin);
-    float waveFront = (1.0 - uClickPulse) * 8.0; // Expanding ring
+    float waveFront = (1.0 - uClickPulse) * 12.0;
     float waveDist = abs(distToClick - waveFront);
-    if (waveDist < 1.2) {
-      float waveForce = (1.0 - waveDist / 1.2) * uClickPulse * 0.8;
+    if (waveDist < 2.2) {
+      float waveForce = (1.0 - waveDist / 2.2) * uClickPulse * 1.55;
       vec3 waveDir = normalize(pos - uClickOrigin + vec3(0.001));
       pos += waveDir * waveForce;
     }

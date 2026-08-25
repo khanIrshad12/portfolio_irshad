@@ -10,6 +10,7 @@ import "swiper/css/pagination";
 
 import { SpotlightCard } from "../reactbits/SpotlightCard";
 import { PHILOSOPHY_PILLARS } from "../../data/portfolioData";
+import type { PhilosophyPillar } from "@/lib/types";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 function PillarCard({
@@ -57,7 +58,16 @@ function PillarCard({
  * Mobile: swipeable pillar carousel (autoplay + infinite loop).
  * Desktop (md+): 3-column grid.
  */
-export function PillarsCarousel() {
+export function PillarsCarousel({
+  pillars = PHILOSOPHY_PILLARS.map((p) => ({
+    id: `pillar-${p.number}`,
+    number: p.number,
+    title: p.title,
+    description: p.description,
+  })),
+}: {
+  pillars?: PhilosophyPillar[];
+}) {
   const reduced = useReducedMotion();
   const [active, setActive] = useState(0);
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
@@ -66,7 +76,7 @@ export function PillarsCarousel() {
     <div className="pillars-block mb-20 md:mb-24">
       {/* Desktop grid */}
       <div className="hidden gap-6 md:grid md:grid-cols-3">
-        {PHILOSOPHY_PILLARS.map((pillar) => (
+        {pillars.map((pillar) => (
           <PillarCard
             key={pillar.number}
             number={pillar.number}
@@ -120,8 +130,7 @@ export function PillarsCarousel() {
 
         <div className="mb-3 flex items-center justify-between px-0.5">
           <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-white/40">
-            Auto · loop · {(active % PHILOSOPHY_PILLARS.length) + 1}/
-            {PHILOSOPHY_PILLARS.length}
+            Auto · loop · {(active % pillars.length) + 1}/{pillars.length}
           </span>
           <div className="flex items-center gap-1.5">
             <button
@@ -169,7 +178,7 @@ export function PillarsCarousel() {
           onSlideChange={(s) => setActive(s.realIndex)}
           className="w-full !overflow-hidden"
         >
-          {PHILOSOPHY_PILLARS.map((pillar) => (
+          {pillars.map((pillar) => (
             <SwiperSlide key={pillar.number} className="!h-auto !overflow-hidden">
               <PillarCard
                 number={pillar.number}

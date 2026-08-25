@@ -152,20 +152,24 @@ export function MoreProjectsCarousel({
                   {project.title}
                 </h4>
                 <p className="mt-3 line-clamp-4 flex-1 text-sm text-[var(--color-muted)]">
-                  {project.description}
+                  {project.tagline || project.description}
                 </p>
-                {project.highlights && project.highlights.length > 0 && (
+                {(project.keyContributions ?? project.highlights)?.length ? (
                   <ul className="mt-3 space-y-1">
-                    {project.highlights.slice(0, 2).map((h) => (
+                    {(project.keyContributions ?? project.highlights)!
+                      .slice(0, 2)
+                      .map((h) => (
                       <li key={h} className="text-xs text-[var(--color-muted)]">
                         • {h}
                       </li>
                     ))}
                   </ul>
-                )}
-                {project.tags?.length > 0 && (
+                ) : null}
+                {(project.techStack ?? project.tags)?.length ? (
                   <div className="mt-3 flex flex-wrap gap-1.5">
-                    {project.tags.slice(0, 3).map((tag) => (
+                    {(project.techStack ?? project.tags)!
+                      .slice(0, 3)
+                      .map((tag) => (
                       <span
                         key={tag}
                         className="rounded-full border-2 border-[var(--color-ink)] bg-[var(--color-accent)] px-2 py-0.5 text-[0.65rem] font-semibold uppercase"
@@ -174,10 +178,10 @@ export function MoreProjectsCarousel({
                       </span>
                     ))}
                   </div>
-                )}
-                {project.url && (
+                ) : null}
+                {(project.liveUrl || project.url) && (
                   <Link
-                    href={project.url}
+                    href={project.liveUrl || project.url!}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="brutal-btn brutal-btn-primary mt-4 w-full text-xs"
