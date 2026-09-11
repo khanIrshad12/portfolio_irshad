@@ -9,7 +9,6 @@ import { normalizePortfolioData } from "./skills";
 import { mergeCinematicContent } from "./cinematic-content";
 
 const DATA_PATH = path.join(process.cwd(), "data", "portfolio.json");
-
 export async function getPortfolioData(): Promise<PortfolioData> {
   let raw: string | null = null;
 
