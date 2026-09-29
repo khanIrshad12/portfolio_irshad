@@ -127,16 +127,18 @@ export function AdminDashboard({
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error("Save failed");
-      const json = await res.json();
-      if (json.data) {
+      const json = await res.json().catch(() => null);
+      if (!res.ok) {
+        throw new Error(json?.error || "Save failed. Please check server logs.");
+      }
+      if (json?.data) {
         setData((prev) => ({ ...prev, ...json.data }));
       }
       setMessageOk(true);
       setMessage("Saved! Refresh the site or admin to see changes.");
-    } catch {
+    } catch (err: unknown) {
       setMessageOk(false);
-      setMessage("Failed to save. Try again.");
+      setMessage(err instanceof Error ? err.message : "Failed to save. Try again.");
     } finally {
       setSaving(false);
     }

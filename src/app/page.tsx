@@ -2,6 +2,7 @@ import { PortfolioExperience } from "@/cinematic/components/experience/Portfolio
 import { getPortfolioData } from "@/lib/portfolio";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function HomePage() {
   const data = await getPortfolioData();

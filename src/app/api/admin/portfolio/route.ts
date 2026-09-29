@@ -5,6 +5,7 @@ import { getPortfolioData, savePortfolioData } from "@/lib/portfolio";
 import type { PortfolioData } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export async function GET() {
   if (!(await isAuthenticated())) {
@@ -27,8 +28,10 @@ export async function PUT(request: NextRequest) {
     revalidatePath("/admin", "layout");
     revalidatePath("/admin");
     return NextResponse.json({ success: true, data: body });
-  } catch {
-    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Failed to save portfolio data";
+    console.error("PUT portfolio error:", err);
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
 
@@ -72,8 +75,10 @@ export async function PATCH(request: NextRequest) {
     revalidatePath("/admin", "layout");
     revalidatePath("/admin");
     return NextResponse.json({ success: true, data: updated });
-  } catch (err) {
+  } catch (err: unknown) {
+    const msg = err instanceof Error ? err.message : "Failed to update portfolio data";
     console.error("PATCH portfolio error:", err);
-    return NextResponse.json({ error: "Invalid data" }, { status: 400 });
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }
+
