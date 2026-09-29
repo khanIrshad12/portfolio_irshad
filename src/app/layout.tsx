@@ -65,8 +65,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
   return {
     metadataBase: new URL(siteUrl),
-    title: "Irshad Khan — Creative Developer & Systems Engineer",
+    title: data.seo.title || "Irshad Khan — Creative Developer & Systems Engineer",
     description:
+      data.seo.description ||
       "Cinematic interactive 3D particle portfolio of Irshad Khan — Creative UI, Full Stack Engineering, Real-Time Airport Systems & WebGL.",
     icons: {
       icon: [

@@ -16,19 +16,42 @@ import {
   staggerContainer,
 } from "../../lib/motion";
 
+import type { Profile, ShowcaseStat } from "@/lib/types";
+
 interface HeroSectionProps {
   onExploreClick: () => void;
   onProjectsClick: () => void;
   onTriggerShockwave: () => void;
+  profile?: Profile;
+  showcase?: ShowcaseStat[];
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({
   onExploreClick,
   onProjectsClick,
   onTriggerShockwave,
+  profile,
+  showcase,
 }) => {
   const reduced = useReducedMotion();
   const sectionRef = useRef<HTMLElement>(null);
+
+  const fullName = (profile?.name || "IRSHAD KHAN").trim();
+  const nameParts = fullName.split(/\s+/);
+  const firstName = nameParts[0]?.toUpperCase() || "IRSHAD";
+  const lastName = nameParts.slice(1).join(" ")?.toUpperCase() || "KHAN";
+
+  const totalExp = (profile?.totalExperience || "2 Yrs 9 Mos").toUpperCase();
+  const tagline =
+    profile?.tagline ||
+    "Architecting high-concurrency industrial dashboards, 3D WebGL simulations, and resilient modern web applications with precision engineering.";
+
+  const stat1Label = showcase?.[0]?.label || "Active Experience";
+  const stat1Val = showcase?.[0]?.value || totalExp;
+  const stat2Label = showcase?.[1]?.label || "Primary Domain";
+  const stat2Val =
+    showcase?.[1]?.value ||
+    (profile?.currentRole ? profile.currentRole.toUpperCase() : "REAL-TIME / 3D");
 
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -128,7 +151,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               className="mb-6 select-none text-[clamp(3.25rem,12vw,8.5rem)] font-black uppercase leading-[0.84] tracking-tighter text-white"
             >
               <SplitText
-                text="IRSHAD"
+                key={`hero-first-${firstName}`}
+                text={firstName}
                 splitType="chars"
                 duration={reduced ? 0.01 : 0.55}
                 stagger={reduced ? 0 : 0.028}
@@ -137,7 +161,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               <br />
               <span className="bg-gradient-to-r from-white via-slate-200 to-slate-400 bg-clip-text text-transparent">
                 <SplitText
-                  text="KHAN"
+                  key={`hero-last-${lastName}`}
+                  text={lastName}
                   splitType="chars"
                   delay={reduced ? 0 : 0.16}
                   duration={reduced ? 0.01 : 0.55}
@@ -153,9 +178,20 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             >
               <div className="hidden h-0.5 w-16 rounded-full bg-gradient-to-r from-cyan-400 to-indigo-500 shadow-[0_0_12px_rgba(34,211,238,0.65)] sm:block" />
               <p className="text-lg font-light tracking-wide text-white/90 sm:text-xl md:text-2xl">
-                <span className="font-semibold text-white">Creative Front-End Developer</span>
-                {" "}&amp;{" "}
-                <span className="font-mono text-cyan-400">Systems Engineer</span>
+                <span className="font-semibold text-white">
+                  {profile?.title || "Creative Front-End Developer"}
+                </span>
+                {profile?.currentRole ? (
+                  <>
+                    {" "}&amp;{" "}
+                    <span className="font-mono text-cyan-400">{profile.currentRole}</span>
+                  </>
+                ) : (
+                  <>
+                    {" "}&amp;{" "}
+                    <span className="font-mono text-cyan-400">Systems Engineer</span>
+                  </>
+                )}
               </p>
             </motion.div>
           </div>
@@ -166,8 +202,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
               className="rounded-r-lg border-l-2 border-cyan-500/40 bg-gradient-to-r from-cyan-950/25 to-transparent py-2.5 pl-5"
             >
               <p className="font-mono text-xs leading-relaxed tracking-wide text-white/70 sm:text-[13px]">
-                Architecting high-concurrency industrial dashboards, 3D WebGL simulations,
-                and resilient modern web applications with precision engineering.
+                {tagline}
               </p>
             </motion.div>
 
@@ -177,19 +212,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({
             >
               <div>
                 <span className="block font-mono text-[9px] uppercase tracking-widest text-white/40">
-                  Active Experience
+                  {stat1Label}
                 </span>
                 <span className="mt-0.5 block font-mono text-base font-black text-white sm:text-lg">
-                  2 YRS 9 MOS
+                  {stat1Val}
                 </span>
               </div>
               <div className="h-8 w-px bg-white/10" />
               <div>
                 <span className="block font-mono text-[9px] uppercase tracking-widest text-white/40">
-                  Primary Domain
+                  {stat2Label}
                 </span>
                 <span className="mt-0.5 block font-mono text-base font-black text-cyan-400 sm:text-lg">
-                  REAL-TIME / 3D
+                  {stat2Val}
                 </span>
               </div>
             </motion.div>

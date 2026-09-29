@@ -8,9 +8,13 @@ import { ShinyText } from "../reactbits/ShinyText";
 import { StaggeredMenu } from "../reactbits/StaggeredMenu";
 import { PERSONAL_INFO } from "../../data/portfolioData";
 
+import type { Profile, SocialLinks } from "@/lib/types";
+
 interface NavbarProps {
   activeSection: string;
   onNavigate: (sectionId: string) => void;
+  profile?: Profile;
+  social?: SocialLinks;
 }
 
 const NAV_ITEMS = [
@@ -25,11 +29,17 @@ const NAV_ITEMS = [
 export const Navbar: React.FC<NavbarProps> = ({
   activeSection,
   onNavigate,
+  profile,
+  social,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [navHidden, setNavHidden] = useState(false);
   const lastYRef = useRef(0);
   const lenis = useLenis();
+
+  const brandName = (profile?.name || PERSONAL_INFO.fullName).toUpperCase();
+  const githubLink = social?.github || PERSONAL_INFO.github;
+  const emailLink = profile?.email || PERSONAL_INFO.email;
 
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -86,11 +96,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const socialItems = useMemo(
     () => [
-      { label: "GitHub", link: PERSONAL_INFO.github },
-      { label: "Portfolio", link: PERSONAL_INFO.portfolioUrl },
-      { label: "Email", link: `mailto:${PERSONAL_INFO.email}` },
+      { label: "GitHub", link: githubLink },
+      { label: "Portfolio", link: social?.website || PERSONAL_INFO.portfolioUrl },
+      { label: "Email", link: `mailto:${emailLink}` },
     ],
-    [],
+    [githubLink, social?.website, emailLink],
   );
 
   const mobileMenuClass = [
@@ -132,11 +142,11 @@ export const Navbar: React.FC<NavbarProps> = ({
             </div>
             <div className="flex flex-col">
               <span className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.25em] text-white transition-colors group-hover:text-cyan-400">
-                <span>IRSHAD KHAN</span>
+                <span>{brandName}</span>
                 <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
               </span>
               <span className="hidden font-mono text-[9px] uppercase tracking-wider text-white/40 sm:block">
-                <ShinyText text="FRONT-END & SYSTEMS" speed={4} />
+                <ShinyText text={profile?.title ? profile.title.toUpperCase() : "FRONT-END & SYSTEMS"} speed={4} />
               </span>
             </div>
           </button>

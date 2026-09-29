@@ -16,9 +16,11 @@ import { soundFx } from "@/utils/audioSynth";
 import { DecryptedText } from "@/cinematic/components/reactbits/DecryptedText";
 import { useReducedMotion } from "@/hooks/useReducedMotion";
 import { EASE_OUT_EXPO } from "@/cinematic/lib/motion";
+import type { Profile } from "@/lib/types";
 
 interface PreloaderProps {
   onComplete: () => void;
+  profile?: Profile;
 }
 
 const BOOT_DURATION_MS = 5000;
@@ -91,7 +93,7 @@ function stepIndexForProgress(progress: number): number {
   return idx;
 }
 
-export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
+export const Preloader: React.FC<PreloaderProps> = ({ onComplete, profile }) => {
   const reduced = useReducedMotion();
   const [progress, setProgress] = useState(0);
   const [isFinished, setIsFinished] = useState(false);
@@ -100,6 +102,9 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
   const [currentLogIndex, setCurrentLogIndex] = useState(0);
   const [accelerated, setAccelerated] = useState(false);
   const [visible, setVisible] = useState(true);
+
+  const brandName = (profile?.name || "IRSHAD KHAN").toUpperCase();
+  const brandTitle = (profile?.title ? `${profile.title} & CREATIVE DEVELOPER` : "SYSTEMS ARCHITECT & CREATIVE DEVELOPER").toUpperCase();
 
   const stepRef = useRef(-1);
   const logBucketRef = useRef(-1);
@@ -287,10 +292,10 @@ export const Preloader: React.FC<PreloaderProps> = ({ onComplete }) => {
               </span>
               <div className="flex min-w-0 flex-col">
                 <span className="truncate text-[10px] font-bold uppercase tracking-[0.15em] text-white sm:text-xs sm:tracking-[0.2em]">
-                  IRSHAD KHAN // PORTFOLIO
+                  {brandName} // PORTFOLIO
                 </span>
                 <span className="hidden truncate text-[8px] uppercase tracking-widest text-cyan-400/80 xs:inline-block sm:text-[9px]">
-                  SYSTEMS ARCHITECT &amp; CREATIVE DEVELOPER
+                  {brandTitle}
                 </span>
               </div>
             </div>

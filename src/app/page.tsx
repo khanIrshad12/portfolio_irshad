@@ -1,6 +1,8 @@
 import { PortfolioExperience } from "@/cinematic/components/experience/PortfolioExperience";
 import { getPortfolioData } from "@/lib/portfolio";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   const data = await getPortfolioData();
   return (
@@ -18,6 +20,7 @@ export default async function HomePage() {
       profile={data.profile}
       social={data.social}
       systemStatus={data.systemStatus}
+      showcase={data.showcase}
       projects={data.projects}
     />
   );

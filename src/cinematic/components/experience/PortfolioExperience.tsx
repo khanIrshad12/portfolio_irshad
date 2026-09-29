@@ -42,6 +42,7 @@ import type {
   Education,
   Certification,
   SystemStatus,
+  ShowcaseStat,
   Project as PortfolioProject,
 } from "@/lib/types";
 import { experiencesToCinematicItems } from "@/lib/experience-map";
@@ -74,6 +75,7 @@ function PortfolioExperienceInner({
   profile,
   social,
   systemStatus,
+  showcase,
   projects: portfolioProjects,
 }: {
   theme: Theme;
@@ -89,6 +91,7 @@ function PortfolioExperienceInner({
   profile?: Profile;
   social?: SocialLinks;
   systemStatus?: SystemStatus;
+  showcase?: ShowcaseStat[];
   projects?: PortfolioProject[];
 }) {
   const themeVars = themeToCinematicCssVars(theme);
@@ -256,7 +259,7 @@ function PortfolioExperienceInner({
       }}
     >
       {showPreloader && (
-        <Preloader key="sys-preloader" onComplete={handlePreloaderComplete} />
+        <Preloader key="sys-preloader" onComplete={handlePreloaderComplete} profile={profile} />
       )}
 
       <PageScanner
@@ -286,6 +289,8 @@ function PortfolioExperienceInner({
         <Navbar
           activeSection={activeSection}
           onNavigate={scrollToSection}
+          profile={profile}
+          social={social}
         />
       )}
 
@@ -335,6 +340,8 @@ function PortfolioExperienceInner({
               onExploreClick={() => scrollToSection('about')}
               onProjectsClick={() => scrollToSection('projects')}
               onTriggerShockwave={handleTriggerShockwave}
+              profile={profile}
+              showcase={showcase}
             />
             <ChapterReveal veil={false}>
               <AboutSection
@@ -388,6 +395,8 @@ function PortfolioExperienceInner({
 
         <Footer
           onBackToTop={() => scrollToSection("hero")}
+          profile={profile}
+          social={social}
           resumeUrl={profile?.resumeUrl}
         />
       </motion.div>
@@ -414,6 +423,7 @@ export const PortfolioExperience: React.FC<{
   profile?: Profile;
   social?: SocialLinks;
   systemStatus?: SystemStatus;
+  showcase?: ShowcaseStat[];
   projects?: PortfolioProject[];
 }> = ({
   theme,
@@ -429,6 +439,7 @@ export const PortfolioExperience: React.FC<{
   profile,
   social,
   systemStatus,
+  showcase,
   projects,
 }) => {
   return (
@@ -447,6 +458,7 @@ export const PortfolioExperience: React.FC<{
         profile={profile}
         social={social}
         systemStatus={systemStatus}
+        showcase={showcase}
         projects={projects}
       />
     </SmoothScroll>

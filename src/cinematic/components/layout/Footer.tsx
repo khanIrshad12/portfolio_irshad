@@ -9,17 +9,29 @@ import {
 } from "lucide-react";
 import { PERSONAL_INFO } from "../../data/portfolioData";
 import { MagneticButton } from "../reactbits/MagneticButton";
+import type { Profile, SocialLinks } from "@/lib/types";
 
 interface FooterProps {
   onBackToTop: () => void;
+  profile?: Profile;
+  social?: SocialLinks;
   resumeUrl?: string;
 }
 
 export const Footer: React.FC<FooterProps> = ({
   onBackToTop,
+  profile,
+  social,
   resumeUrl,
 }) => {
-  const hasResume = Boolean(resumeUrl?.trim());
+  const activeResumeUrl = (profile?.resumeUrl || resumeUrl)?.trim() ?? "";
+  const hasResume = Boolean(activeResumeUrl);
+  const fullName = (profile?.name || PERSONAL_INFO.fullName).toUpperCase();
+  const title = profile?.title || PERSONAL_INFO.headline;
+  const location = profile?.location || PERSONAL_INFO.location;
+  const totalExp = profile?.totalExperience || PERSONAL_INFO.totalExperience;
+  const email = profile?.email || PERSONAL_INFO.email;
+  const github = social?.github || PERSONAL_INFO.github;
 
   return (
     <footer className="relative z-20 w-full border-t border-white/10 bg-[#030303] px-4 py-16 text-white/60 sm:px-8 lg:px-16">
@@ -30,30 +42,30 @@ export const Footer: React.FC<FooterProps> = ({
               <div className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
             </div>
             <span className="text-xl font-black uppercase tracking-tighter text-white">
-              {PERSONAL_INFO.fullName}
+              {fullName}
             </span>
           </div>
           <p className="flex flex-wrap items-center gap-2 font-mono text-xs text-white/50">
-            <span>{PERSONAL_INFO.headline}</span>
+            <span>{title}</span>
             <span className="text-white/20">•</span>
-            <span>{PERSONAL_INFO.location}</span>
+            <span>{location}</span>
             <span className="text-white/20">•</span>
             <span className="font-bold text-cyan-400">
-              {PERSONAL_INFO.totalExperience}
+              {totalExp}
             </span>
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3 font-mono text-xs">
           <a
-            href={`mailto:${PERSONAL_INFO.email}`}
+            href={`mailto:${email}`}
             className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-[11px] uppercase tracking-wider text-white/80 transition-colors hover:bg-white/10 hover:text-white"
           >
             <Mail className="h-3.5 w-3.5 text-cyan-400" />
             <span>Email</span>
           </a>
           <a
-            href={PERSONAL_INFO.github}
+            href={github}
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-4 py-2 text-[11px] uppercase tracking-wider text-white/80 transition-colors hover:bg-white/10 hover:text-white"
