@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Trash2, Save, Menu, X } from "lucide-react";
+import { Plus, Trash2, Save, Menu, X, Sparkles } from "lucide-react";
+import { calculateExperience } from "@/utils/experienceCalculator";
 import type {
   PortfolioData,
   ContactMessage,
@@ -144,7 +145,10 @@ export function AdminDashboard({
     }
   }
 
-  function updateProfile(field: keyof PortfolioData["profile"], value: string) {
+  function updateProfile<K extends keyof PortfolioData["profile"]>(
+    field: K,
+    value: PortfolioData["profile"][K],
+  ) {
     setData((d) => ({ ...d, profile: { ...d.profile, [field]: value } }));
   }
 
@@ -424,16 +428,82 @@ export function AdminDashboard({
                 value={data.profile.currentRole ?? ""}
                 onChange={(v) => updateProfile("currentRole", v)}
               />
-              <AdminField
-                label="Total experience"
-                value={data.profile.totalExperience ?? ""}
-                onChange={(v) => updateProfile("totalExperience", v)}
-                placeholder="2 years 6 months"
-              />
               <ResumeUpload
                 resumeUrl={data.profile.resumeUrl}
                 onUrlChange={(url) => updateProfile("resumeUrl", url)}
               />
+
+              <div className="sm:col-span-2 rounded-xl border border-cyan-500/25 bg-cyan-950/20 p-5 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="size-4 text-cyan-400" />
+                    <h3 className="font-mono text-[11px] font-bold uppercase tracking-[0.2em] text-cyan-400">
+                      Dynamic Experience Calculator
+                    </h3>
+                  </div>
+                  <label className="flex items-center gap-2 text-xs font-mono text-white/80 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={data.profile.autoCalculateExperience !== false}
+                      onChange={(e) =>
+                        updateProfile("autoCalculateExperience", e.target.checked)
+                      }
+                      className="size-4 accent-cyan-400 rounded cursor-pointer"
+                    />
+                    <span>Auto-calculate (increments monthly)</span>
+                  </label>
+                </div>
+
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <AdminField
+                    label="Career start date"
+                    type="date"
+                    value={data.profile.careerStartDate || "2024-01-01"}
+                    onChange={(v) => updateProfile("careerStartDate", v)}
+                    className={
+                      data.profile.autoCalculateExperience === false
+                        ? "opacity-50 pointer-events-none"
+                        : ""
+                    }
+                  />
+
+                  <div>
+                    <AdminLabel>Live Calculated Tenure</AdminLabel>
+                    <div className="rounded-xl border border-white/10 bg-[#030303] px-4 py-3 flex items-center justify-between min-h-[46px]">
+                      <div className="flex items-center gap-2">
+                        <span className="inline-block size-2 rounded-full bg-emerald-400 animate-pulse" />
+                        <span className="font-mono text-sm font-bold text-white">
+                          {
+                            calculateExperience(
+                              data.profile.careerStartDate || "2024-01-01"
+                            ).formatted
+                          }
+                        </span>
+                      </div>
+                      <span className="text-[11px] font-mono text-cyan-400/80 uppercase">
+                        {
+                          calculateExperience(
+                            data.profile.careerStartDate || "2024-01-01"
+                          ).badgeFormatted
+                        }
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <p className="text-xs text-white/50 leading-relaxed">
+                  Every month, the tenure automatically increments (e.g. 2 Years 11 Months → 3 Years → 3 Years 1 Month). When auto-calculate is active, all hero tags, badges, and about statistics reflect this live duration dynamically.
+                </p>
+
+                {data.profile.autoCalculateExperience === false && (
+                  <AdminField
+                    label="Manual total experience override"
+                    value={data.profile.totalExperience ?? ""}
+                    onChange={(v) => updateProfile("totalExperience", v)}
+                    placeholder="2 Years 9 Months"
+                  />
+                )}
+              </div>
               <div className="sm:col-span-2 rounded-xl border border-white/10 bg-[#080808]/60 p-5">
                 <h3 className="mb-4 font-mono text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-400">
                   Availability (contact section)

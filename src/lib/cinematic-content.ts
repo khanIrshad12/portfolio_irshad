@@ -7,6 +7,7 @@ import type {
   Education,
   Certification,
 } from "./types";
+import { resolveTotalExperience } from "@/utils/experienceCalculator";
 
 /** Live-site defaults from cinematic portfolioData.ts */
 export const CINEMATIC_ABOUT_SECTION: AboutSectionMeta = {
@@ -112,13 +113,31 @@ export const CINEMATIC_CERTIFICATIONS: Certification[] = [
 ];
 
 export function mergeCinematicContent(data: PortfolioData): PortfolioData {
+  const dynamicTotalExp = resolveTotalExperience(data.profile);
+  const updatedProfile = data.profile
+    ? {
+        ...data.profile,
+        totalExperience: dynamicTotalExp,
+      }
+    : data.profile;
+
+  const rawStats =
+    data.aboutStats && data.aboutStats.length > 0
+      ? data.aboutStats
+      : CINEMATIC_ABOUT_STATS;
+
+  const updatedStats = rawStats.map((stat) => {
+    if (stat.id === "experience" && data.profile?.autoCalculateExperience !== false) {
+      return { ...stat, value: dynamicTotalExp };
+    }
+    return stat;
+  });
+
   return {
     ...data,
+    profile: updatedProfile,
     aboutSection: data.aboutSection ?? CINEMATIC_ABOUT_SECTION,
-    aboutStats:
-      data.aboutStats && data.aboutStats.length > 0
-        ? data.aboutStats
-        : CINEMATIC_ABOUT_STATS,
+    aboutStats: updatedStats,
     philosophyPillars:
       data.philosophyPillars && data.philosophyPillars.length > 0
         ? data.philosophyPillars
@@ -141,3 +160,4 @@ export function mergeCinematicContent(data: PortfolioData): PortfolioData {
         : CINEMATIC_CERTIFICATIONS,
   };
 }
+

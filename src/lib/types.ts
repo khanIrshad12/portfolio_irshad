@@ -17,6 +17,8 @@ export interface Profile {
   currentCompany?: string;
   currentRole?: string;
   totalExperience?: string;
+  careerStartDate?: string;
+  autoCalculateExperience?: boolean;
 }
 
 export interface ShowcaseStat {

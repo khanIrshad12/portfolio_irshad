@@ -10,7 +10,9 @@
     "avatarUrl": "",
     "currentCompany": "Kenmark ITanSolutions",
     "currentRole": "Full Stack Developer",
-    "totalExperience": "2 years 9 months"
+    "totalExperience": "2 Years 9 Months",
+    "careerStartDate": "2024-01-01",
+    "autoCalculateExperience": true
   },
   "social": {
     "github": "https://github.com/khanIrshad12",
