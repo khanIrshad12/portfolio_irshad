@@ -55,6 +55,44 @@ function moveItem<T>(list: T[], index: number, dir: -1 | 1): T[] {
   return copy;
 }
 
+function getPayloadForTab(
+  tab: AdminTab,
+  d: PortfolioData,
+): Partial<PortfolioData> {
+  switch (tab) {
+    case "hero":
+      return { profile: d.profile, showcase: d.showcase };
+    case "about":
+      return {
+        aboutSection: d.aboutSection,
+        aboutStats: d.aboutStats,
+        philosophyPillars: d.philosophyPillars,
+        profile: d.profile,
+      };
+    case "skills":
+      return {
+        skillsSection: d.skillsSection,
+        skillCategories: d.skillCategories,
+      };
+    case "experience":
+      return { experience: d.experience };
+    case "projects":
+      return { projects: d.projects };
+    case "education":
+      return { education: d.education, certifications: d.certifications };
+    case "settings":
+      return {
+        theme: d.theme,
+        seo: d.seo,
+        social: d.social,
+        systemStatus: d.systemStatus,
+        profile: d.profile,
+      };
+    default:
+      return d;
+  }
+}
+
 export function AdminDashboard({
   initialData,
   initialMessages,
@@ -82,15 +120,20 @@ export function AdminDashboard({
     setMessage("");
 
     try {
+      const payload = getPayloadForTab(tab, data);
       const res = await fetch("/api/admin/portfolio", {
-        method: "PUT",
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       });
 
       if (!res.ok) throw new Error("Save failed");
+      const json = await res.json();
+      if (json.data) {
+        setData((prev) => ({ ...prev, ...json.data }));
+      }
       setMessageOk(true);
-      setMessage("Saved! Refresh the site to see changes.");
+      setMessage("Saved! Refresh the site or admin to see changes.");
     } catch {
       setMessageOk(false);
       setMessage("Failed to save. Try again.");

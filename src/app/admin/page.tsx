@@ -4,6 +4,9 @@ import { getPortfolioData } from "@/lib/portfolio";
 import { getContactMessages, getUnreadContactCount } from "@/lib/contacts";
 import { AdminDashboard } from "@/components/admin/AdminDashboard";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminPage() {
   if (!(await isAuthenticated())) redirect("/admin/login");
   const [data, messages, unread] = await Promise.all([

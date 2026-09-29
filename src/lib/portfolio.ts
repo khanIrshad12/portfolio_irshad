@@ -9,6 +9,7 @@ import { normalizePortfolioData } from "./skills";
 import { mergeCinematicContent } from "./cinematic-content";
 
 const DATA_PATH = path.join(process.cwd(), "data", "portfolio.json");
+
 export async function getPortfolioData(): Promise<PortfolioData> {
   let raw: string | null = null;
 
@@ -16,7 +17,19 @@ export async function getPortfolioData(): Promise<PortfolioData> {
     try {
       const blobs = await list({ prefix: "portfolio-data.json" });
       if (blobs.blobs.length > 0) {
-        const res = await fetch(blobs.blobs[0].url, { cache: "no-store" });
+        // Find newest blob by upload date
+        const sortedBlobs = [...blobs.blobs].sort(
+          (a, b) => new Date(b.uploadedAt).getTime() - new Date(a.uploadedAt).getTime(),
+        );
+        const targetBlob = sortedBlobs[0];
+        // Bust edge CDN and browser caching with timestamp and no-cache headers
+        const res = await fetch(`${targetBlob.url}?t=${Date.now()}`, {
+          cache: "no-store",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+          },
+        });
         if (res.ok) {
           raw = await res.text();
         }
@@ -42,9 +55,11 @@ export async function getPortfolioData(): Promise<PortfolioData> {
 }
 
 export async function savePortfolioData(data: PortfolioData): Promise<void> {
+  const serialized = JSON.stringify(data, null, 2);
+
   if (process.env.BLOB_READ_WRITE_TOKEN) {
     try {
-      await put("portfolio-data.json", JSON.stringify(data, null, 2), {
+      await put("portfolio-data.json", serialized, {
         access: "public",
         addRandomSuffix: false,
       });
@@ -54,7 +69,7 @@ export async function savePortfolioData(data: PortfolioData): Promise<void> {
   }
 
   try {
-    await fs.writeFile(DATA_PATH, JSON.stringify(data, null, 2), "utf-8");
+    await fs.writeFile(DATA_PATH, serialized, "utf-8");
   } catch (err) {
     if (!process.env.BLOB_READ_WRITE_TOKEN) {
       console.warn("Could not write portfolio data to disk (read-only filesystem):", err);
