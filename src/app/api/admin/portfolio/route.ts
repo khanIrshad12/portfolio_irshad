@@ -59,6 +59,7 @@ export async function PATCH(request: NextRequest) {
       systemStatus: partial.systemStatus
         ? { ...current.systemStatus, ...partial.systemStatus }
         : current.systemStatus,
+      about: partial.about ? { ...current.about, ...partial.about } : current.about,
       experience: partial.experience ?? current.experience,
       projects: partial.projects ?? current.projects,
       skillCategories: partial.skillCategories ?? current.skillCategories,

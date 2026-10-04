@@ -20,6 +20,13 @@
     "twitter": "",
     "website": ""
   },
+  "systemStatus": {
+    "isAvailable": true,
+    "statusText": "Open to Hire — Roles & Freelance",
+    "location": "Mumbai, India · Remote-friendly worldwide",
+    "currentFocus": "React / Next.js, Real-Time Systems & Creative WebGL",
+    "activeClientSlots": "2y 10m experience · Available now"
+  },
   "about": {
     "headline": "Full stack developer at Kenmark ITanSolutions — 10+ production projects shipped",
     "bio": "I'm a full stack developer with 2.9 years at Kenmark ITanSolutions, delivering end-to-end systems for entertainment, maritime, ecommerce, and industrial IoT clients. I've built airport airfield lighting control dashboards (React, Socket.IO, Modbus TCP), Smaaash's full platform stack (marketing site, booking engine, Express API, admin dashboards), INMARCO conference websites, maritime calendar apps, and ecommerce storefronts with Prisma, payments, and admin CMS tooling. Comfortable across frontend, backend APIs, databases, auth, and deployment — with a focus on performance, SEO, and production reliability.",

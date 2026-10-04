@@ -7,7 +7,7 @@ import type {
   Education,
   Certification,
 } from "./types";
-import { resolveTotalExperience } from "@/utils/experienceCalculator";
+import { calculateExperience, resolveTotalExperience } from "@/utils/experienceCalculator";
 
 /** Live-site defaults from cinematic portfolioData.ts */
 export const CINEMATIC_ABOUT_SECTION: AboutSectionMeta = {
@@ -21,7 +21,7 @@ export const CINEMATIC_ABOUT_STATS: AboutStatCard[] = [
   {
     id: "experience",
     label: "Total Experience",
-    value: "2 Years 9 Months",
+    value: "2 Years 10 Months",
     sublabel: "Front-End Developer",
   },
   {
@@ -73,7 +73,7 @@ export const CINEMATIC_SYSTEM_STATUS: SystemStatus = {
   statusText: "Open to Hire — Roles & Freelance",
   location: "Mumbai, India · Remote-friendly worldwide",
   currentFocus: "React / Next.js, Real-Time Systems & Creative WebGL",
-  activeClientSlots: "2y 9m experience · Available now",
+  activeClientSlots: "2y 10m experience · Available now",
 };
 
 export const CINEMATIC_EDUCATION: Education[] = [
@@ -133,6 +133,22 @@ export function mergeCinematicContent(data: PortfolioData): PortfolioData {
     return stat;
   });
 
+  const shortExp = calculateExperience(data.profile?.careerStartDate).shortFormatted;
+  let updatedSystemStatus = data.systemStatus ?? CINEMATIC_SYSTEM_STATUS;
+  if (
+    data.profile?.autoCalculateExperience !== false &&
+    shortExp &&
+    (!updatedSystemStatus.activeClientSlots ||
+      updatedSystemStatus.activeClientSlots.includes("experience · Available now") ||
+      updatedSystemStatus.activeClientSlots.includes("2y 9m experience") ||
+      updatedSystemStatus.activeClientSlots.includes("2y 10m experience"))
+  ) {
+    updatedSystemStatus = {
+      ...updatedSystemStatus,
+      activeClientSlots: `${shortExp} experience · Available now`,
+    };
+  }
+
   return {
     ...data,
     profile: updatedProfile,
@@ -142,7 +158,7 @@ export function mergeCinematicContent(data: PortfolioData): PortfolioData {
       data.philosophyPillars && data.philosophyPillars.length > 0
         ? data.philosophyPillars
         : CINEMATIC_PILLARS,
-    systemStatus: data.systemStatus ?? CINEMATIC_SYSTEM_STATUS,
+    systemStatus: updatedSystemStatus,
     education:
       data.education && data.education.length > 0
         ? data.education.map((e, i) => ({
@@ -160,4 +176,3 @@ export function mergeCinematicContent(data: PortfolioData): PortfolioData {
         : CINEMATIC_CERTIFICATIONS,
   };
 }
-

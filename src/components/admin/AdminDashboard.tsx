@@ -62,9 +62,15 @@ function getPayloadForTab(
 ): Partial<PortfolioData> {
   switch (tab) {
     case "hero":
-      return { profile: d.profile, showcase: d.showcase };
+      return {
+        profile: d.profile,
+        showcase: d.showcase,
+        systemStatus: d.systemStatus,
+        social: d.social,
+      };
     case "about":
       return {
+        about: d.about,
         aboutSection: d.aboutSection,
         aboutStats: d.aboutStats,
         philosophyPillars: d.philosophyPillars,
