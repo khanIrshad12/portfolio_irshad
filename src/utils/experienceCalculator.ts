@@ -40,23 +40,18 @@ export function calculateExperience(
     };
   }
 
-  const start = new Date(startYear, startMonth, startDay);
-  let years = targetDate.getFullYear() - start.getFullYear();
-  let months = targetDate.getMonth() - start.getMonth();
+  // Total elapsed months inclusive of the ongoing month
+  let totalMonths =
+    (targetDate.getFullYear() - startYear) * 12 +
+    (targetDate.getMonth() - startMonth) +
+    1;
 
-  if (targetDate.getDate() < start.getDate()) {
-    months--;
+  if (totalMonths < 0) {
+    totalMonths = 0;
   }
 
-  if (months < 0) {
-    years--;
-    months += 12;
-  }
-
-  if (years < 0) {
-    years = 0;
-    months = 0;
-  }
+  const years = Math.floor(totalMonths / 12);
+  const months = totalMonths % 12;
 
   // Singular/Plural text rules
   const yearText = years === 1 ? "1 Year" : `${years} Years`;
